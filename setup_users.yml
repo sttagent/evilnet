@@ -1,0 +1,35 @@
+---
+- name: setup test server users
+  hosts: test
+  remote_user: root
+  vars_files:
+    - vault.yml
+
+  tasks:
+  - name: create aitvaras user
+    user:
+      name: "{{ main_user }}"
+      password: "{{ main_user_password | password_hash('sha512') }}"
+      groups:
+      - wheel 
+      update_password: on_create
+  
+  - name: cpy ssh key
+    authorized_key:
+      user: aitvaras
+      state: present
+      key: "{{ lookup('file', '/var/home/aitvaras/.ssh/hetzner_key.pub') }}"
+      
+  - name: config sshd_config
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: "^(# *)?{{ item.property | regex_escape() }}"
+      line: "{{ item.property }} {{ item.value }}"
+    with_items:
+      - { property: 'PermitRootLogin', value: 'no' }
+      - { property: 'PasswordAuthentication', value: 'no' }
+
+  - name: restart sshd
+    systemd:
+      name: sshd
+      state: restarted

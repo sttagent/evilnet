@@ -1,0 +1,33 @@
+---
+- name: setup test server
+  hosts: test
+  remote_user: "{{ main_user }}"
+  vars_files:
+    - vault.yml
+  vars:
+    ansible_become_password: "{{ main_user_password }}"
+
+  tasks:
+  - name: update packages
+    become: yes
+    dnf:
+      name: '*'
+      state: latest
+      update_cache: yes
+  
+  - name: enable repos
+    become: yes
+    dnf:
+      name:
+        - epel-release
+        - elrepo-release
+      state: latest
+  
+  - name: install packages
+    become: yes
+    dnf:
+      name:
+        - tmux
+        - wireguard-tools
+        - firewalld
+      state: latest
