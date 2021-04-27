@@ -1,3 +1,4 @@
 ---
 - import_playbook: setup_users.yml
+- import_playbook: switch_to_centos_stream.yml
 - import_playbook: setup_servers.yml

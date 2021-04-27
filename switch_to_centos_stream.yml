@@ -1,0 +1,25 @@
+---
+- name: switch centos repos to centos stream
+  hosts: test
+  remote_user: "{{ main_user }}"
+  become: yes
+  vars_files:
+    - vault.yml
+  vars:
+    ansible_become_password: "{{ main_user_password }}"
+  
+  tasks:
+  - name: update os
+    dnf:
+      name: '*'
+      state: latest
+      update_cache: yes
+
+  - name: switch repos
+    command: dnf swap centos-linux-repos centos-stream-repos -y
+  
+  - name: sync distro
+    command: dnf distro-sync -y
+  
+  - name: reboot
+    reboot:

@@ -8,6 +8,10 @@
     ansible_become_password: "{{ main_user_password }}"
 
   tasks:
+  - name: wait for os to bootup
+    wait_for_connection:
+      delay: 30
+
   - name: update packages
     become: yes
     dnf:
@@ -30,4 +34,5 @@
         - tmux
         - wireguard-tools
         - firewalld
+      update_cache: yes
       state: latest
