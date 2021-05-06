@@ -4,32 +4,35 @@
   remote_user: root
   vars_files:
     - vault.yml
-
-  tasks:
-  - name: create aitvaras user
-    user:
-      name: "{{ main_user }}"
-      password: "{{ main_user_password | password_hash('sha512') }}"
-      groups:
-      - wheel 
-      update_password: on_create
+  tags:
+    - setup-users
   
-  - name: cpy ssh key
-    authorized_key:
-      user: aitvaras
-      state: present
-      key: "{{ lookup('file', '/var/home/aitvaras/.ssh/hetzner_key.pub') }}"
-      
-  - name: config sshd_config
-    lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: "^(# *)?{{ item.property | regex_escape() }}"
-      line: "{{ item.property }} {{ item.value }}"
-    with_items:
-      - { property: 'PermitRootLogin', value: 'no' }
-      - { property: 'PasswordAuthentication', value: 'no' }
+  tasks:
+    - name: create aitvaras user
+      user:
+        name: "{{ main_user }}"
+        password: "{{ main_user_password | password_hash('sha512') }}"
+        groups:
+        - wheel 
+        update_password: on_create
 
-  - name: restart sshd
-    systemd:
-      name: sshd
-      state: restarted
+    - name: cpy ssh key
+      authorized_key:
+        user: "{{ main_user }}"
+        state: present
+        key: "{{ lookup('file', '/var/home/aitvaras/.ssh/hetzner_key.pub') }}"
+
+    - name: config sshd_config
+      copy:
+        content: |
+          PermitRootLogin no
+          PasswordAuthentication no
+        dest: /etc/ssh/sshd_config.d/99-custom.conf
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: restart sshd
+      systemd:
+        name: sshd
+        state: restarted

@@ -1,0 +1,59 @@
+---
+- name: enable repos
+  dnf:
+    name:
+      - epel-release
+      - elrepo-release
+    state: present
+    update_cache: yes
+  when: ansible_facts['distribution'] == "Centos"
+
+- name: update packages
+  dnf:
+    name: '*'
+    state: latest
+    update_cache: yes
+  tags:
+    - pkg-update
+  
+- name: install packages
+  dnf:
+    name:
+      - fish
+      - tmux
+      - wireguard-tools
+      - podman
+      - cockpit
+      - cockpit-podman
+    state: present
+  tags: pkg-install
+
+- name: configure firewalld
+  block:
+    - name: add cockpit port
+      firewalld:
+        service: cockpit
+        state: enabled
+        immediate: yes
+        permanent: yes
+  tags:
+    - fw-config
+
+
+- name: installing centos packages and modules
+  block:
+    - name: install centos pakcages
+      dnf:
+        name:
+          - firewalld
+          - kmod-wireguard
+        state: present
+      notify: restart firewalld
+
+    - name: load wireguard module
+      modprobe:
+        name: wireguard
+        state: present
+  tags:
+    - -cent-os-wg-install
+  when: ansible_facts['distribution'] == "Centos"

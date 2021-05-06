@@ -7,6 +7,8 @@
     - vault.yml
   vars:
     ansible_become_password: "{{ main_user_password }}"
+  tags:
+    - convert-to-stream
   
   tasks:
   - name: update os
