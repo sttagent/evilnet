@@ -36,6 +36,12 @@
     state: started
     enabled: yes
 
+- name: start firewalld
+  systemd:
+    service: cockpit
+    state: started
+    enabled: yes
+
 - name: configure firewalld
   block:
     - name: add cockpit port

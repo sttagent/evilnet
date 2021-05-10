@@ -16,4 +16,13 @@
       modprobe:
         name: wireguard
         state: present
-    when: ansible_facts['distribution'] == 'Centos'
+  when: ansible_facts['distribution'] == 'Centos'
+
+- name: check if private key exists
+  stat:
+    path: "{{ wireguard_directory }}/{{ wireguard_interface }}.conf"
+  register: wireguard_register_conf_file
+  
+- name: does wg conf file exists
+  debug:
+    var: wireguard_register_conf_file.exists

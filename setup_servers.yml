@@ -8,14 +8,4 @@
 
   roles:
     - common
-
-
-- name: setup wireguard server
-  hosts: wgserver
-  remote_user: "{{ main_user }}"
-  become: yes
-  vars:
-    ansible_become_password: "{{ main_user_password }}"
-  
-  roles:
-    - wgserver
+    - vpn
