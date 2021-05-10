@@ -1,0 +1,11 @@
+---
+all:
+  hosts:
+  children:
+    vpn:
+      hosts:
+        vpnserver:
+          ansible_host: 135.181.85.62
+      children:
+        vpnclients:
+          hosts:

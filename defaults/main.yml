@@ -1,2 +1,3 @@
-# main administrator
-main_user: aitvaras
+---
+# vault file
+vault_file: vault.yml

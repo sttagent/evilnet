@@ -1,0 +1,4 @@
+all:
+  hosts:
+    wgserver:
+      ansible_host: evilwoods.xyz

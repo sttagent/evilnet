@@ -1,0 +1,24 @@
+- name: installing centos packages and modules
+  block:
+    - name: enable repos
+      dnf:
+        name:
+          - epel-release
+          - elrepo-release
+        state: present
+
+    - name: install centos pakcages
+      dnf:
+        name:
+          - kmod-wireguard
+        state: present
+        update_cache: yes
+      tags:
+        - wg-install
+
+    - name: load wireguard module
+      modprobe:
+        name: wireguard
+        state: present
+      tags:
+        - wg-install

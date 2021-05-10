@@ -1,16 +1,21 @@
 ---
-- name: setup test server
-  hosts: test
+- name: setup common configuration
+  hosts: all
   remote_user: "{{ main_user }}"
   become: yes
-  vars_files:
-    - vault.yml
   vars:
     ansible_become_password: "{{ main_user_password }}"
 
-  tasks:
-  - name: wait for os to bootup
-    wait_for_connection:
-
   roles:
     - common
+
+
+- name: setup wireguard server
+  hosts: wgserver
+  remote_user: "{{ main_user }}"
+  become: yes
+  vars:
+    ansible_become_password: "{{ main_user_password }}"
+  
+  roles:
+    - wgserver

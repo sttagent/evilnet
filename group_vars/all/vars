@@ -1,0 +1,17 @@
+---
+# main administrator
+main_user: aitvaras
+
+wireguard_default_dir: '/etc/wireguard'
+
+wireguard_default_interface: wg0
+
+wireguard_endpoint: 
+
+wireguard_port: '51820'
+
+wireguard_conf_owner: 'root'
+
+wireguard_conf_group: 'root'
+
+wireguard_conf_mode: '0600'

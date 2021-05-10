@@ -1,38 +1,34 @@
 ---
 - name: setup test server users
-  hosts: test
+  hosts: all
   remote_user: root
-  vars_files:
-    - vault.yml
-  tags:
-    - setup-users
   
   tasks:
-    - name: create aitvaras user
-      user:
-        name: "{{ main_user }}"
-        password: "{{ main_user_password | password_hash('sha512') }}"
-        groups:
-        - wheel 
-        update_password: on_create
+  - name: create aitvaras user
+    user:
+      name: "{{ main_user }}"
+      password: "{{ main_user_password | password_hash('sha512') }}"
+      groups:
+      - wheel 
+      update_password: on_create
 
-    - name: cpy ssh key
-      authorized_key:
-        user: "{{ main_user }}"
-        state: present
-        key: "{{ lookup('file', '/var/home/aitvaras/.ssh/hetzner_key.pub') }}"
+  - name: cpy ssh key
+    authorized_key:
+      user: "{{ main_user }}"
+      state: present
+      key: "{{ lookup('file', '/var/home/aitvaras/.ssh/hetzner_key.pub') }}"
 
-    - name: config sshd_config
-      copy:
-        content: |
-          PermitRootLogin no
-          PasswordAuthentication no
-        dest: /etc/ssh/sshd_config.d/99-custom.conf
-        owner: root
-        group: root
-        mode: '0600'
+  - name: config sshd_config
+    copy:
+      content: |
+        PermitRootLogin no
+        PasswordAuthentication no
+      dest: /etc/ssh/sshd_config.d/99-custom.conf
+      owner: root
+      group: root
+      mode: '0600'
 
-    - name: restart sshd
-      systemd:
-        name: sshd
-        state: restarted
+  - name: restart sshd
+    systemd:
+      name: sshd
+      state: restarted
