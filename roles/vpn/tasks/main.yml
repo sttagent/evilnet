@@ -1,0 +1,19 @@
+---
+- name: install wireguard packages
+  dnf:
+    name: wireguard-tools
+    state: present
+
+- name: install wireguard kernel module
+  block:
+    - name: install the module 
+      dnf:
+        name:
+          - kmod-wireguard
+        state: present
+    
+    - name: load wg module
+      modprobe:
+        name: wireguard
+        state: present
+    when: ansible_facts['distribution'] == 'Centos'

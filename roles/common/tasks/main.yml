@@ -10,7 +10,12 @@
   tags:
     - pkg-update
 
-- include_tasks: centos.yml
+- name: enable centos extra repos
+  dnf:
+    name:
+      - epel-release
+      - elrepo-release
+    state: present
   when: ansible_facts['distribution'] == "Centos"
 
 - name: install packages
@@ -18,7 +23,6 @@
     name:
       - firewalld
       - tmux
-      - wireguard-tools
       - cockpit
     state: present
   notify:

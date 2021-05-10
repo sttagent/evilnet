@@ -1,4 +1,0 @@
----
-- name: wg server
-  debug:
-    msg: "todo wg server"
