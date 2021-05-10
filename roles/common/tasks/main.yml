@@ -36,7 +36,7 @@
     state: started
     enabled: yes
 
-- name: start firewalld
+- name: start cockpit
   systemd:
     service: cockpit
     state: started

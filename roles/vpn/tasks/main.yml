@@ -19,10 +19,20 @@
   when: ansible_facts['distribution'] == 'Centos'
 
 - name: check if private key exists
+  become_user: root
   stat:
-    path: "{{ wireguard_directory }}/{{ wireguard_interface }}.conf"
+    path: "{{ wireguard_directory }}/privatekey"
   register: wireguard_register_conf_file
+
+- name: generate new keys
+  become: true
+  become_user: root
+  block:
+    - name: create directory
+      file:
+        path: "{{ wireguard_directory }}"
+        state: directory
+        owner: root
+        mode: '0700'
+
   
-- name: does wg conf file exists
-  debug:
-    var: wireguard_register_conf_file.exists
