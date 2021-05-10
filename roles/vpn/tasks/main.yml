@@ -3,6 +3,8 @@
   dnf:
     name: wireguard-tools
     state: present
+  tags:
+    - wg-install
 
 - name: install wireguard kernel module
   block:
@@ -17,14 +19,18 @@
         name: wireguard
         state: present
   when: ansible_facts['distribution'] == 'Centos'
+  tags:
+    - wg-install
 
 - name: check if private key exists
   become_user: root
   stat:
     path: "{{ wireguard_directory }}/privatekey"
   register: wireguard_register_conf_file
+  tags:
+    - wg-gen-key
 
-- name: generate new keys
+- name: generate new private key
   become: true
   become_user: root
   block:
@@ -33,6 +39,60 @@
         path: "{{ wireguard_directory }}"
         state: directory
         owner: root
+        group: root
         mode: '0700'
+    
+    - name: generate privete key
+      command: wg genkey
+      register: wireguard_register_private_key
+    
+    - name: save key to file
+      copy:
+        content: "{{ wireguard_register_private_key.stdout }}"
+        dest: "{{ wireguard_directory }}/privatekey"
+        owner: root
+        group: root
+        mode: '0600'
+  when:
+    - not wireguard_register_conf_file.stat.exists
+  tags:
+    - wg-gen-key
 
+- name: generate public key
+  become: true
+  become_user: root
+  block:
+    - name: read private key from file
+      slurp:
+        src: "{{ wireguard_directory }}/privatekey"
+      register: wireguard_register_private_key_file
+
+    - name: set private key fact
+      set_fact:
+        wireguard_private_key: "{{ wireguard_register_private_key_file['content'] | b64decode }}"
+
+    - name: generate public key
+      command: wg pubkey
+      args:
+        stdin: "{{ wireguard_private_key }}"
+      register: wireguard_register_public_key
+    
+    - name: set public key fact
+      set_fact:
+        wireguard_public_key: "{{ wireguard_register_public_key }}"
+    
+    - name: save public key to file
+      copy:
+        content: "{{ wireguard_register_public_key.stdout }}"
+        dest: "{{ wireguard_directory }}/publickey"
+        force: yes
+        owner: root
+        group: root
+        mode: '0600'
+    
+    - name: fetch wg server public key
+      fetch:
+        src: "{{ wireguard_directory }}/publickey"
+        dest: "../wg"
+      when:  inventory_hostname == 'vpnserver'
   

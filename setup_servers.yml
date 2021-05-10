@@ -8,4 +8,6 @@
 
   roles:
     - common
-    - vpn
+    - role: vpn
+      tags:
+        - wg-config
