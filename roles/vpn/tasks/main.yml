@@ -85,7 +85,7 @@
       copy:
         content: "{{ wireguard_register_public_key.stdout }}"
         dest: "{{ wireguard_directory }}/publickey"
-        force: yes
+        force: yes # overwrites file if content differs
         owner: root
         group: root
         mode: '0600'
