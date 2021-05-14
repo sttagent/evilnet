@@ -1,0 +1,17 @@
+---
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+      ansible_python_interpreter: "{{ ansible_playbook_python }}"
+  children:
+    vpn:
+      hosts:
+        vpnserver:
+          ansible_host: 135.181.85.62
+      children:
+        vpnclients:
+          hosts:
+            testclient:
+              ansible_host: 135.181.27.72
+            

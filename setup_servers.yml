@@ -1,6 +1,6 @@
 ---
 - name: setup common configuration
-  hosts: all
+  hosts: all:!localhost
   remote_user: "{{ main_user }}"
   become: yes
   vars:
@@ -8,6 +8,15 @@
 
   roles:
     - common
+
+- name: setup common configuration
+  hosts: all
+  remote_user: "{{ main_user }}"
+  become: yes
+  vars:
+    ansible_become_password: "{{ main_user_password }}"
+
+  roles:
     - role: vpn
       tags:
         - wg-config

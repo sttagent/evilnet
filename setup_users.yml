@@ -1,6 +1,22 @@
 ---
+- name: test for connectivity
+  hosts: all:!localhost
+  gather_facts: false
+  ignore_errors: true
+  ignore_unreachable: true
+  tasks:
+    - block:
+      - name: this does nothing
+        shell: exit 1
+        resgister: result
+      always:
+        - add_host:
+            name: "{{ inventory_name }}"
+            group: reachable
+
+
 - name: setup test server users
-  hosts: all
+  hosts: reachable
   remote_user: root
   
   tasks:
