@@ -4,15 +4,18 @@
   gather_facts: false
   ignore_errors: true
   ignore_unreachable: true
+  remote_user: root
   tasks:
     - block:
       - name: this does nothing
-        shell: exit 1
-        resgister: result
-      always:
-        - add_host:
-            name: "{{ inventory_name }}"
-            group: reachable
+        ping:
+        register: response
+      - name: print response
+        debug:
+          var: response
+      - group_by:
+          key: reachable
+        when: response.ping is defined and response.ping == "pong"
 
 
 - name: setup test server users
