@@ -23,6 +23,7 @@
     name:
       - firewalld
       - tmux
+      - fish
       - cockpit
     state: present
   notify:
