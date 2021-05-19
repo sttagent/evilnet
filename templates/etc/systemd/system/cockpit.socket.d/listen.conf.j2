@@ -1,0 +1,7 @@
+#jinja2: lstrip_blocks:"True",trim_blocks:"True"
+# {{ ansible_managed }}
+
+# {{ inventory_hostname }}
+[Socket]
+ListenPort = {{ wireguard_address.split('/')[0] }}
+FreeBind = yes

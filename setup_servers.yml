@@ -1,6 +1,6 @@
 ---
 - name: setup common configuration
-  hosts: all:!localhost
+  hosts: all
   remote_user: "{{ main_user }}"
   become: yes
   vars:

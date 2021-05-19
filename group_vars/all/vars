@@ -2,16 +2,16 @@
 # main administrator
 main_user: aitvaras
 
+vps_internal_net: 172.16.0.0/24
+
+vps_wireguard_net: 10.8.0.0/24
+
 wireguard_directory: '/etc/wireguard'
 
 wireguard_interface: wg0
 
-wireguard_endpoint: 
+wireguard_config_owner: 'root'
 
-wireguard_port: '51820'
+wireguard_config_group: 'root'
 
-wireguard_conf_owner: 'root'
-
-wireguard_conf_group: 'root'
-
-wireguard_conf_mode: '0600'
+wireguard_config_mode: '0600'

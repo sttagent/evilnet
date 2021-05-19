@@ -1,0 +1,17 @@
+# wireguard_private_key:
+
+wireguard_address: 10.8.0.1/24
+
+wireguard_port: 51820
+
+wireguard_endpoint: 172.16.0.2
+
+wireguard_allowed_ips: 10.8.0.1/24
+
+wireguard_unmanaged_peers:
+  evilroots:
+    public_key: jPePSHlU38eZJXe8jtwQ1/kK+Ra6tlWScgfdgVMLTD0=
+    allowed_ips: 10.8.0.101/32
+  aitvaras_motog7:
+    public_key: cZKOO1pTfjIgoUE7038WCGV3eXAbnnN2Mau4YpgpVzY=
+    allowed_ips: 10.8.0.102/32

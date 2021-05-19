@@ -28,7 +28,7 @@
     path: "{{ wireguard_directory }}/privatekey"
   register: wireguard_register_conf_file
   tags:
-    - wg-gen-key
+    - wg-gen-keys
 
 - name: generate new private key
   become: true
@@ -56,7 +56,7 @@
   when:
     - not wireguard_register_conf_file.stat.exists
   tags:
-    - wg-gen-key
+    - wg-gen-keys
 
 - name: generate public key
   become: true
@@ -79,7 +79,7 @@
     
     - name: set public key fact
       set_fact:
-        wireguard_public_key: "{{ wireguard_register_public_key }}"
+        wireguard_public_key: "{{ wireguard_register_public_key.stdout }}"
     
     - name: save public key to file
       copy:
@@ -95,4 +95,63 @@
         src: "{{ wireguard_directory }}/publickey"
         dest: "../wg"
       when:  inventory_hostname == 'vpnserver'
+  tags:
+    - wg-gen-keys
+    
+- name: genereate wireguard config
+  become_user: root
+  become: true
+  template:
+    src: etc/wireguard/wg.conf.j2
+    dest: "{{ wireguard_directory }}/{{ wireguard_interface }}.conf"
+    owner: "{{ wireguard_config_owner }}"
+    group: "{{ wireguard_config_group }}"
+    mode: "{{ wireguard_config_mode }}"
+
+
+- name: configire firewall for wg
+  block:
+    - name: add internal network interface to trusted zone
+      firewalld:
+        interface: eth1
+        zone: trusted
+        state: enabled
+        permanent: yes
+        immediate: yes
+    
+    - name: add source for eth1 interface
+      firewalld:
+        zone: trusted
+        source: "{{ vps_internal_net }}"
+        permanent: yes
+        immediate: yes
+        state: enabled
+
+    - name: add internal network interface to trusted zone
+      firewalld:
+        interface: wg0
+        zone: trusted
+        state: enabled
+        permanent: yes
+        immediate: yes
+
+    - name: add source for wg0 interface
+      firewalld:
+        zone: trusted
+        permanent: yes
+        immediate: yes
+        source: "{{ vps_wireguard_net }}"
+        state: enabled
+    
+    - name: open wg port on public
+      firewalld:
+        zone: public
+        port: "{{ wireguard_port }}/udp"
+        state: enable
+  tags:
+    - wg-firewall
+
+
+
+
   

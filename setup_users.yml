@@ -1,6 +1,6 @@
 ---
 - name: test for connectivity
-  hosts: all:!localhost
+  hosts: all
   gather_facts: false
   ignore_errors: true
   ignore_unreachable: true

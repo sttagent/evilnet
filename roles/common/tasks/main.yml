@@ -10,49 +10,57 @@
   tags:
     - pkg-update
 
-- name: enable centos extra repos
-  dnf:
-    name:
-      - epel-release
-      - elrepo-release
-    state: present
-  when: ansible_facts['distribution'] == "Centos"
-
 - name: install packages
-  dnf:
-    name:
-      - firewalld
-      - tmux
-      - fish
-      - cockpit
-    state: present
-  notify:
-    - restart firewalld
-    - restart cockpit
-  tags: pkg-install
-
-- name: start firewalld
-  systemd:
-    service: firewalld
-    state: started
-    enabled: yes
-
-- name: start cockpit
-  systemd:
-    service: cockpit
-    state: started
-    enabled: yes
-
-- name: configure firewalld
   block:
-    - name: add cockpit port
-      ansible.posix.firewalld:
-        service: cockpit
-        state: enabled
-        immediate: yes
-        permanent: yes
-  tags:
-    - fw-config
+    - name: enable centos extra repos
+      dnf:
+        name:
+          - epel-release
+          - elrepo-release
+        state: present
+      when: ansible_facts['distribution'] == "Centos"
 
-#- name: check if keys exists
-  
+    - name: install packages
+      dnf:
+        name:
+          - firewalld
+          - tmux
+          - fish
+          - cockpit
+        state: present
+  tags:
+    - install-packages
+
+- name: apply custom configuration
+  block:
+    - name: make sure cockpit config dir exists
+      file:
+        path: /etc/systemd/system/cockpit.socket.d
+        state: directory
+        owner: root
+        group: root
+    
+    - name: create cockpit custom config
+      template:
+          src: etc/systemd/system/cockpit.socket.d/listen.conf.j2
+          dest: /etc/systemd/system/cockpit.socket.d/listen.conf
+          owner: root
+          group: root
+  tags:
+    - apply-config
+
+- name: start services
+  block:
+    - name: start firewalld
+      systemd:
+        service: firewalld
+        state: started
+        enabled: yes
+
+    - name: start cockpit
+      systemd:
+        service: cockpit
+        state: started
+        enabled: yes
+  tags:
+    - start-services
