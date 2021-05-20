@@ -28,7 +28,7 @@ PostUp = {{ wg_postup }}
 {% endif %}  
 {% if wireguard_postdown is defined %}
 {% for wg_postdown in wireguard_postdown %}
-PostDowon = {{ wg_postdown }}
+PostDown = {{ wg_postdown }}
 {% endfor %}
 {% endif %}  
 {% if wireguard_save_config is defined %}
