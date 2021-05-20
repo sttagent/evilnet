@@ -10,11 +10,11 @@ wireguard_allowed_ips: 10.8.0.1/24
 
 wireguard_postup:
   - "sysctl -w net.ipv4.ip_forward=1"
-  - "firewall-cmd --zone=public --add-port=51820"
+  - "firewall-cmd --zone=public --add-port=51820/udp"
 
 wireguard_postdown:
   - "sysctl -w net.ipv4.ip_forward=0"
-  - "firewall-cmd --zone=public --remove-port=51820"
+  - "firewall-cmd --zone=public --remove-port=51820/udp"
 
 wireguard_unmanaged_peers:
   evilroots:
