@@ -89,6 +89,8 @@
         owner: root
         group: root
         mode: '0600'
+      when:
+        - not wireguard_register_conf_file.stat.exists
     
     - name: fetch wg server public key
       fetch:
@@ -143,11 +145,6 @@
         source: "{{ vps_wireguard_net }}"
         state: enabled
     
-    - name: open wg port on public
-      firewalld:
-        zone: public
-        port: "{{ wireguard_port }}/udp"
-        state: enable
   tags:
     - wg-firewall
 
