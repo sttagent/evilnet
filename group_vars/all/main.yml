@@ -1,0 +1,7 @@
+---
+# main administrator
+main_user: aitvaras
+
+vps_internal_net_interface: eth1
+
+vps_internal_net: 172.16.0.0/24
