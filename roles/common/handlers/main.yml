@@ -3,10 +3,8 @@
   systemd:
     name: firewalld
     state: restarted
-    enabled: yes
 
 - name: restart cockpit
   systemd:
     name: cockpit.socket
     state: restarted
-    enabled: yes
