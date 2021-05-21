@@ -3,20 +3,26 @@
   hosts: all
   remote_user: "{{ main_user }}"
   become: yes
-  vars:
-    ansible_become_password: "{{ main_user_password }}"
 
   roles:
     - common
+
 
 - name: setup common configuration
   hosts: vpn
   remote_user: "{{ main_user }}"
   become: yes
-  vars:
-    ansible_become_password: "{{ main_user_password }}"
 
   roles:
     - role: vpn
       tags:
         - wg-config
+
+
+- name: setup common configuration
+  hosts: evilgate
+  remote_user: "{{ main_user }}"
+  become: yes
+
+  roles:
+    - vpnserver
