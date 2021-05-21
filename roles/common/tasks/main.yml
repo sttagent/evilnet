@@ -46,6 +46,8 @@
           dest: /etc/systemd/system/cockpit.socket.d/listen.conf
           owner: root
           group: root
+      notify:
+        - restart cockpit
   tags:
     - apply-config
 
