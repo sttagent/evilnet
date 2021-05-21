@@ -61,7 +61,7 @@
 
     - name: start cockpit
       systemd:
-        service: cockpit
+        service: cockpit.socket
         state: started
         enabled: yes
   tags:
