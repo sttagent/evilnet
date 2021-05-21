@@ -10,7 +10,7 @@
     - common
 
 - name: setup common configuration
-  hosts: all
+  hosts: vpn
   remote_user: "{{ main_user }}"
   become: yes
   vars:
