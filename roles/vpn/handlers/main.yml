@@ -1,4 +1,5 @@
 ---
-- name: restart wiregaurd service
+- name: restart wireguard service
   systemd:
     name: "wg-quick@{{ wireguard_interface }}.service"
+    state: restarted
