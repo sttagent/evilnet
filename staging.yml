@@ -4,7 +4,7 @@ all:
   children:
     vpn:
       hosts:
-        vpnserver:
+        evilgate:
           ansible_host: 135.181.85.62
         testclient:
           ansible_host: 135.181.27.72
