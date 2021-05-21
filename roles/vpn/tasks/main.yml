@@ -6,6 +6,7 @@
   tags:
     - wg-install
 
+
 - name: install wireguard kernel module
   block:
     - name: install the module 
@@ -22,15 +23,23 @@
   tags:
     - wg-install
 
-- name: check if private key exists
-  become_user: root
-  stat:
-    path: "{{ wireguard_directory }}/privatekey"
-  register: wireguard_register_conf_file
-  tags:
-    - wg-gen-keys
 
-- name: generate new private key
+- name: check if key files exists
+  block:
+    - name: check if private key exists
+      become_user: root
+      stat:
+        path: "{{ wireguard_directory }}/privatekey"
+      register: wireguard_register_privatekey_file
+      
+    - name: check if public key exists
+      become_user: root
+      stat:
+        path: "{{ wireguard_directory }}/publickey"
+      register: wireguard_register_publickey_file
+
+
+- name: generate new keys
   become: true
   become_user: root
   block:
@@ -50,15 +59,39 @@
       copy:
         content: "{{ wireguard_register_private_key.stdout }}"
         dest: "{{ wireguard_directory }}/privatekey"
+        force: yes # overwrites file if content differs
         owner: root
         group: root
         mode: '0600'
+
+    - name: generate public key
+      command: wg pubkey
+      args:
+        stdin: "{{ wireguard_register_private_key.stdout }}"
+      register: wireguard_register_public_key
+
+    - name: save public key to file
+      copy:
+        content: "{{ wireguard_register_public_key.stdout }}"
+        dest: "{{ wireguard_directory }}/publickey"
+        force: yes # overwrites file if content differs
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: fetch wg server public key
+      fetch:
+        src: "{{ wireguard_directory }}/publickey"
+        dest: "../wg"
+      when:  inventory_hostname == 'vpnserver'
   when:
-    - not wireguard_register_conf_file.stat.exists
+    - not wireguard_register_privatekey_file.stat.exists
+    - not wireguard_register_publickey_file.stat.exists
   tags:
     - wg-gen-keys
 
-- name: generate public key
+
+- name: read keys and set key facts
   become: true
   become_user: root
   block:
@@ -71,34 +104,14 @@
       set_fact:
         wireguard_private_key: "{{ wireguard_register_private_key_file['content'] | b64decode }}"
 
-    - name: generate public key
-      command: wg pubkey
-      args:
-        stdin: "{{ wireguard_private_key }}"
-      register: wireguard_register_public_key
+    - name: read public key from file
+      slurp:
+        src: "{{ wireguard_directory }}/publickey"
+      register: wireguard_register_public_key_file
     
     - name: set public key fact
       set_fact:
-        wireguard_public_key: "{{ wireguard_register_public_key.stdout }}"
-    
-    - name: save public key to file
-      copy:
-        content: "{{ wireguard_register_public_key.stdout }}"
-        dest: "{{ wireguard_directory }}/publickey"
-        force: yes # overwrites file if content differs
-        owner: root
-        group: root
-        mode: '0600'
-      when:
-        - not wireguard_register_conf_file.stat.exists
-    
-    - name: fetch wg server public key
-      fetch:
-        src: "{{ wireguard_directory }}/publickey"
-        dest: "../wg"
-      when:  inventory_hostname == 'vpnserver'
-  tags:
-    - wg-gen-keys
+        wireguard_private_key: "{{ wireguard_register_public_key_file['content'] | b64decode }}"
     
 - name: genereate wireguard config
   become_user: root
@@ -109,13 +122,15 @@
     owner: "{{ wireguard_config_owner }}"
     group: "{{ wireguard_config_group }}"
     mode: "{{ wireguard_config_mode }}"
+  notify:
+    - 
 
 
-- name: configire firewall for wg
+- name: configure firewall for wg
   block:
     - name: add internal network interface to trusted zone
       firewalld:
-        interface: eth1
+        interface: "{{ vps_internal_net_interface }}"
         zone: trusted
         state: enabled
         permanent: yes
@@ -131,20 +146,19 @@
 
     - name: add internal network interface to trusted zone
       firewalld:
-        interface: wg0
+        interface: "{{ wireguard_interface }}"
         zone: trusted
         state: enabled
         permanent: yes
         immediate: yes
 
-    - name: add source for wg0 interface
+    - name: add source for wireguard interface
       firewalld:
         zone: trusted
         permanent: yes
         immediate: yes
         source: "{{ vps_wireguard_net }}"
         state: enabled
-    
   tags:
     - wg-firewall
 
