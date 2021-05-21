@@ -6,9 +6,6 @@ all:
       hosts:
         vpnserver:
           ansible_host: 135.181.85.62
-      children:
-        vpnclients:
-          hosts:
-            testclient:
-              ansible_host: 135.181.27.72
+        testclient:
+          ansible_host: 135.181.27.72
             
