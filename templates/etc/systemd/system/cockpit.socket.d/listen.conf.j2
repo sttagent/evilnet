@@ -3,5 +3,6 @@
 
 # {{ inventory_hostname }}
 [Socket]
-ListenPort = {{ wireguard_address.split('/')[0] }}
-FreeBind = yes
+ListenStream=
+ListenStream={{ wireguard_address.split('/')[0] }}:9090
+FreeBind=yes
