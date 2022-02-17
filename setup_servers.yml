@@ -3,26 +3,9 @@
   hosts: all
   remote_user: "{{ main_user }}"
   become: yes
+  vars_prompt:
+    - name: tailscalekey
+      promt: enter tailscale key
 
   roles:
     - common
-
-
-- name: setup common configuration
-  hosts: vpn
-  remote_user: "{{ main_user }}"
-  become: yes
-
-  roles:
-    - role: vpn
-      tags:
-        - wg-config
-
-
-- name: setup common configuration
-  hosts: evilgate
-  remote_user: "{{ main_user }}"
-  become: yes
-
-  roles:
-    - vpnserver

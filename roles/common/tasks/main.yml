@@ -2,67 +2,62 @@
 - name: wait for server to reboot
   wait_for_connection:
 
-- name: update packages
-  dnf:
-    name: '*'
-    state: latest
-    update_cache: yes
-  tags:
-    - pkg-update
+- name: add tailscale reposotory
+  get_url:
+    url: https://pkgs.tailscale.com/stable/fedora/tailscale.repo
+    dest: /etc/yum.repos.d/tailscale.repo
+    mode: 0644
 
 - name: install packages
   block:
-    - name: enable centos extra repos
-      dnf:
-        name:
-          - epel-release
-          - elrepo-release
-        state: present
-      when: ansible_facts['distribution'] == "Centos"
-
     - name: install packages
       dnf:
         name:
-          - firewalld
           - tmux
           - fish
-          - cockpit
+          - neovim
+          - fzf
+          - bat
+          - python3-neovim
+          - tailscale
+          - toolbox
+          - podman
         state: present
   tags:
     - install-packages
 
-- name: apply custom configuration
+- name: enalbe tailscale daemon
+  systemd:
+    name: tailscaled
+    state: started
+    enabled: yes
+
+
+- name: check if tailscale was connected prevously
+  stat:
+    path: "/home/{{ main_user }}/.tailscale_connected"
+  register: tailscale_connected
+
+- name: connect to tailscale
   block:
-    - name: make sure cockpit config dir exists
+    - name: connect with key
+      shell: tailscale up --authkey "{{ tailscalekey }}"
+    - name: create a tailscale_connected file
       file:
-        path: /etc/systemd/system/cockpit.socket.d
-        state: directory
-        owner: root
-        group: root
-    
-    - name: create cockpit custom config
-      template:
-          src: etc/systemd/system/cockpit.socket.d/listen.conf.j2
-          dest: /etc/systemd/system/cockpit.socket.d/listen.conf
-          owner: root
-          group: root
-      notify:
-        - restart cockpit
-  tags:
-    - apply-config
+        path: "/home/{{ main_user }}/.tailscale_conencted"
+        state: touch
+  when: tailscale_connected.stat.exists
 
-- name: start services
+- name: close ports
   block:
-    - name: start firewalld
-      systemd:
-        service: firewalld
-        state: started
-        enabled: yes
+    - name: close cockpit
+      firewalld:
+        service: cockpit
+        permanent: yes
+        state: disabled
 
-    - name: start cockpit
-      systemd:
-        service: cockpit.socket
-        state: started
-        enabled: yes
-  tags:
-    - start-services
+    - name: close ssh
+      firewalld:
+        service: ssh
+        permanent: yes
+        state: disabled

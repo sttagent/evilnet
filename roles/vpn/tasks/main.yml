@@ -83,7 +83,7 @@
       fetch:
         src: "{{ wireguard_directory }}/publickey"
         dest: "../wg"
-      when:  inventory_hostname == 'vpnserver'
+      when: inventory_hostname == 'evilgate'
   when:
     - not wireguard_register_privatekey_file.stat.exists
     - not wireguard_register_publickey_file.stat.exists
@@ -111,7 +111,7 @@
     
     - name: set public key fact
       set_fact:
-        wireguard_private_key: "{{ wireguard_register_public_key_file['content'] | b64decode }}"
+        wireguard_public_key: "{{ wireguard_register_public_key_file['content'] | b64decode }}"
     
 - name: genereate wireguard config
   become_user: root
@@ -123,7 +123,13 @@
     group: "{{ wireguard_config_group }}"
     mode: "{{ wireguard_config_mode }}"
   notify:
-    - 
+    - restart wireguard service
+
+- name: start wireguard service
+  systemd:
+    name: "wg-quick@{{ wireguard_interface }}.service"
+    state: started
+    enabled: yes
 
 
 - name: configure firewall for wg
@@ -135,6 +141,7 @@
         state: enabled
         permanent: yes
         immediate: yes
+      when: vps_internal_net_interface is defined
     
     - name: add source for eth1 interface
       firewalld:
@@ -143,6 +150,7 @@
         permanent: yes
         immediate: yes
         state: enabled
+      when: vps_internal_net is defined
 
     - name: add internal network interface to trusted zone
       firewalld:

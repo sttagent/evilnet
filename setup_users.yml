@@ -1,41 +1,17 @@
 ---
-- name: test for connectivity
-  hosts: all
-  gather_facts: false
-  ignore_errors: true
-  ignore_unreachable: true
-  remote_user: root
-  tasks:
-    - block:
-      - name: this does nothing
-        ping:
-        register: response
-      - name: print response
-        debug:
-          var: response
-      - group_by:
-          key: reachable
-        when: response.ping is defined and response.ping == "pong"
-
-
-- name: setup test server users
-  hosts: reachable
-  remote_user: root
+- name: setup connection
+  hosts: evilserver
+  remote_user: "{{ main_user }}"
+  become: true
+  vars:
+    ansible_ssh_pass: "{{ main_user_password }}"
   
   tasks:
-  - name: create aitvaras user
-    user:
-      name: "{{ main_user }}"
-      password: "{{ main_user_password | password_hash('sha512') }}"
-      groups:
-      - wheel 
-      update_password: on_create
-
   - name: cpy ssh key
     authorized_key:
       user: "{{ main_user }}"
       state: present
-      key: "{{ lookup('file', '/var/home/aitvaras/.ssh/hetzner_key.pub') }}"
+      key: "{{ lookup('file', '/var/home/aitvaras/.ssh/evilserver.pub') }}"
 
   - name: config sshd_config
     copy:

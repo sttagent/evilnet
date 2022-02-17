@@ -1,10 +1,12 @@
 ---
+- import_playbook: update_servers.yml
+  tags:
+    - update_servers
+
 - import_playbook: setup_users.yml
   tags:
     - setup_users
 
 - import_playbook: setup_servers.yml
-  vars:
-    ansible_become_password: "{{ main_user_password }}"
   tags:
     - setup_servers
