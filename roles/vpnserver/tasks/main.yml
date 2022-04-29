@@ -1,7 +1,0 @@
----
-- name: install qrencode
-  dnf:
-    name: qrencode
-    state: present
-  tags:
-    - wg-install
