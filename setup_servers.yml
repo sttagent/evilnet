@@ -3,9 +3,6 @@
   hosts: all
   remote_user: "{{ main_user }}"
   become: yes
-  vars_prompt:
-    - name: tailscalekey
-      promt: enter tailscale key
 
   roles:
     - common
