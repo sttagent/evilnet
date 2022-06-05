@@ -29,8 +29,3 @@
       owner: root
       group: root
       mode: '0600'
-
-  - name: restart sshd
-    systemd:
-      name: sshd
-      state: restarted
