@@ -4,7 +4,7 @@
 
 - name: add tailscale reposotory
   get_url:
-    url: https://pkgs.tailscale.com/stable/fedora/tailscale.repo
+    url: https://pkgs.tailscale.com/stable/centos/9/tailscale.repo
     dest: /etc/yum.repos.d/tailscale.repo
     mode: 0644
 
@@ -31,33 +31,3 @@
     name: tailscaled
     state: started
     enabled: yes
-
-
-- name: check if tailscale was connected prevously
-  stat:
-    path: "/home/{{ main_user }}/.tailscale_connected"
-  register: tailscale_connected
-
-- name: connect to tailscale
-  block:
-    - name: connect with key
-      shell: tailscale up --authkey "{{ tailscalekey }}"
-    - name: create a tailscale_connected file
-      file:
-        path: "/home/{{ main_user }}/.tailscale_conencted"
-        state: touch
-  when: tailscale_connected.stat.exists
-
-- name: close ports
-  block:
-    - name: close cockpit
-      firewalld:
-        service: cockpit
-        permanent: yes
-        state: disabled
-
-    - name: close ssh
-      firewalld:
-        service: ssh
-        permanent: yes
-        state: disabled
