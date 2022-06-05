@@ -19,7 +19,7 @@
       content: |
         PermitRootLogin no
         PasswordAuthentication no
-      dest: /etc/ssh/sshd_config.d/99-custom.conf
+      dest: /etc/ssh/sshd_config.d/99-evilserver.conf
       owner: root
       group: root
       mode: '0600'
