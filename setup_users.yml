@@ -4,6 +4,7 @@
   remote_user: "{{ main_user }}"
   become: true
   vars:
+    ansible_ssh_args: "-o PreferredAuthentications=password"
     ansible_ssh_pass: "{{ main_user_password }}"
   
   tasks:
