@@ -8,11 +8,17 @@
     ansible_ssh_pass: "{{ main_user_password }}"
   
   tasks:
-  - name: cpy ssh key
+  - name: cpy evilroots ssh key
     authorized_key:
       user: "{{ main_user }}"
       state: present
-      key: "{{ lookup('file', '/var/home/aitvaras/.ssh/evilserver.pub') }}"
+      key: "{{ evilroots_ssh_pub_key }}"
+
+  - name: cpy evilbook ssh key
+    authorized_key:
+      user: "{{ main_user }}"
+      state: present
+      key: "{{ evilbook_ssh_pub_key }}"
 
   - name: config sshd_config
     copy:
