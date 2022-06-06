@@ -1,8 +1,37 @@
 ---
-- name: setup common configuration
+- name: setup evilservers
   hosts: all
   remote_user: "{{ main_user }}"
   become: yes
+
+  tasks:
+    - name: update server
+      tags: server-update
+      block:
+      - name: update server
+        dnf:
+          name: "*"
+          state: latest
+          update_cache: yes
+      - name: reboot server
+        reboot:
+      - name: wait for server to reboot
+        wait_for_connection:
+
+    - name: copy ssh keys
+      tags: key-copy
+      block:
+      - name: cpy evilroots ssh key
+        authorized_key:
+        user: "{{ main_user }}"
+        state: present
+        key: "{{ evilroots_ssh_pub_key }}"
+      - name: cpy evilbook ssh key
+        authorized_key:
+        user: "{{ main_user }}"
+        state: present
+        key: "{{ evilbook_ssh_pub_key }}"
+
 
   roles:
     - common

@@ -1,7 +1,4 @@
 ---
-- name: wait for server to reboot
-  wait_for_connection:
-
 - name: add tailscale reposotory
   get_url:
     url: https://pkgs.tailscale.com/stable/centos/9/tailscale.repo
