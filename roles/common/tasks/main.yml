@@ -5,29 +5,31 @@
     dest: /etc/yum.repos.d/tailscale.repo
     mode: 0644
 
-- name: enable epel
-  dnf:
-    name:
-      - epel-release
-    state: present
 
 - name: install packages
   block:
+    - name: enable epel
+      dnf:
+        name:
+          - epel-release
+        state: present
+      when:
+        - ansible_facts['distribution'] == 'CentOS'
+
     - name: install packages
       dnf:
         name:
           - tmux
           - fish
           - neovim
-          - fzf
-          - bat
           - python3-neovim
           - tailscale
           - toolbox
           - podman
         state: present
+        update_cache: yes
   tags:
-    - install-packages
+    - package-installation
 
 - name: enalbe tailscale daemon
   systemd:
