@@ -31,11 +31,42 @@
   tags:
     - package-installation
 
-- name: enalbe tailscale daemon
+- name: enable tailscale daemon
   systemd:
     name: tailscaled
     state: started
     enabled: yes
+
+- name: check tailscale status
+  command: tailscale status
+  register: tailscale_status
+  changed_when: false           # nothing changes here but ansible reports changed
+  failed_when:
+    - tailscale_status.rc != 0
+    - "'Logged out.' not in tailscale_status.stdout"
+
+- name: check if tailscale key is defined
+  assert:
+    that:
+      - tailscale_key is defined
+    quiet: true
+    fail_msg: "Tailscale_key not found. Provide tailscale key with --extra-vars 'tailscale_key=...' argument"
+    success_msg: "Tailscale_key found"
+  register: tailscale_key_assert
+  ignore_errors: true
+  when:
+    - tailscale_status.rc != 0
+    - "'Logged out.' in tailscale_status.stdout"
+
+- name: Bring tailscale up
+  command: tailscale up --auth-key "{{ tailscale_key }}"
+  no_log: true
+  register: tailscale_up_status
+  when:
+    - tailscale_status.rc != 0
+    - "'Logged out.' in tailscale_status.stdout"
+    - not tailscale_key_assert.failed
+  changed_when: tailscale_up_status.rc == 0
 
 - name: config sshd_config
   copy:
