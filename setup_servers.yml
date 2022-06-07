@@ -6,7 +6,7 @@
   vars:
     ansible_ssh_pass: "{{ main_user_password }}"
 
-  tasks:
+  pre_tasks:
     - name: update server
       tags: server-update
       block:
@@ -15,24 +15,26 @@
           name: "*"
           state: latest
           update_cache: yes
+        register: dnf_update_status
       - name: reboot server
         reboot:
-      - name: wait for server to reboot
-        wait_for_connection:
+        when:
+          - dnf_update_status.changed
+
 
     - name: copy ssh keys
       tags: key-copy
       block:
       - name: cpy evilroots ssh key
         authorized_key:
-        user: "{{ main_user }}"
-        state: present
-        key: "{{ evilroots_ssh_pub_key }}"
+          user: "{{ main_user }}"
+          state: present
+          key: "{{ evilroots_ssh_pub_key }}"
       - name: cpy evilbook ssh key
         authorized_key:
-        user: "{{ main_user }}"
-        state: present
-        key: "{{ evilbook_ssh_pub_key }}"
+          user: "{{ main_user }}"
+          state: present
+          key: "{{ evilbook_ssh_pub_key }}"
 
 
   roles:
