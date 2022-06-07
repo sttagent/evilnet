@@ -5,6 +5,12 @@
     dest: /etc/yum.repos.d/tailscale.repo
     mode: 0644
 
+- name: enable epel
+  dnf:
+    name:
+      - epel-release
+    state: present
+
 - name: install packages
   block:
     - name: install packages
