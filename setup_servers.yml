@@ -3,6 +3,8 @@
   hosts: all
   remote_user: "{{ main_user }}"
   become: yes
+  vars:
+    ansible_ssh_pass: "{{ main_user_password }}"
 
   tasks:
     - name: update server
