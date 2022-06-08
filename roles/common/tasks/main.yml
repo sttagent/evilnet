@@ -31,6 +31,7 @@
   tags:
     - package-installation
 
+# TODO move tailscale into a block. Block runs if tailscale service is not up and connected.
 - name: enable tailscale daemon
   systemd:
     name: tailscaled
@@ -67,6 +68,36 @@
     - "'Logged out.' in tailscale_status.stdout"
     - not tailscale_key_assert.failed
   changed_when: tailscale_up_status.rc == 0
+
+- name: read tailscale address
+  command: tailscale ip -4
+  changed_when: false
+  register: tailscale_ip_status
+
+- name: create cockpit socket config 'distribution'
+  file:
+    path: /etc/systemd/system/cockpit.socket.d/
+    state: directory
+
+- name: write cockpit conf
+  copy:
+    content: |
+      [Socket]
+      ListenStream=
+      ListenStream={{ tailscale_ip_status.stdout }}:9090
+      FreeBind=yes
+    dest: /etc/systemd/system/cockpit.socket.d/listen.conf
+    owner: root
+    group: root
+    mode: '0644'
+  when:
+    - tailscale_ip_status.rc == 0
+
+- name: start cockpit Socket
+  systemd:
+    name: cockpit.socket
+    state: started
+    enabled: true
 
 - name: config sshd_config
   copy:
