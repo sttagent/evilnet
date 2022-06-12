@@ -1,5 +1,0 @@
----
-all:
-  hosts:
-    evilserver:
-      ansible_host:  89.58.29.75

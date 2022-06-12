@@ -1,0 +1,5 @@
+---
+all:
+  hosts:
+    evilserver:
+      ansible_host:  # ip, hostname
