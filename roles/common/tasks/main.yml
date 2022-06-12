@@ -1,13 +1,11 @@
 ---
-- name: add tailscale reposotory
-  get_url:
-    url: https://pkgs.tailscale.com/stable/centos/9/tailscale.repo
-    dest: /etc/yum.repos.d/tailscale.repo
-    mode: 0644
-
-
-- name: install packages
+- name: Packages
   block:
+    - name: add tailscale reposotory
+      get_url:
+        url: https://pkgs.tailscale.com/stable/centos/9/tailscale.repo
+        dest: /etc/yum.repos.d/tailscale.repo
+        mode: 0644
     - name: enable epel
       dnf:
         name:
@@ -46,50 +44,73 @@
     - tailscale_status.rc != 0
     - "'Logged out.' not in tailscale_status.stdout"
 
-- name: check if tailscale key is defined
-  assert:
-    that:
-      - tailscale_key is defined
-    quiet: true
-    fail_msg: "Tailscale_key not found. Provide tailscale key with --extra-vars 'tailscale_key=...' argument"
-    success_msg: "Tailscale_key found"
-  register: tailscale_key_assert
-  ignore_errors: true
-  when:
-    - tailscale_status.rc != 0
-    - "'Logged out.' in tailscale_status.stdout"
+- name: tailscale
+  block:
+  - name: check if tailscale key is defined
+    assert:
+      that:
+        - tailscale_key is defined
+      quiet: true
+      fail_msg: "Tailscale_key not found. Provide tailscale key with --extra-vars 'tailscale_key=...' argument"
+      success_msg: "Tailscale_key found"
+    register: tailscale_key_assert
+    ignore_errors: true
 
-- name: Bring tailscale up
-  command: tailscale up --auth-key "{{ tailscale_key }}"
-  no_log: true
-  register: tailscale_up_status
+  - name: Bring tailscale up
+    command: tailscale up --auth-key "{{ tailscale_key }}"
+    no_log: true
+    register: tailscale_up_status
+    when:
+      - not tailscale_key_assert.failed
+    changed_when: tailscale_up_status.rc == 0
+  
+  - name: assign tailscale interface to internal zone
+    firewalld:
+      zone: internal
+      interface: tailscale0
+      state: enabled
+      permanent: yes
   when:
-    - tailscale_status.rc != 0
-    - "'Logged out.' in tailscale_status.stdout"
-    - not tailscale_key_assert.failed
-  changed_when: tailscale_up_status.rc == 0
+      - tailscale_status.rc != 0
+      - "'Logged out.' in tailscale_status.stdout"
 
 - name: read tailscale address
   command: tailscale ip -4
   changed_when: false
   register: tailscale_ip_status
 
-- name: create cockpit socket config 'distribution'
-  file:
-    path: /etc/systemd/system/cockpit.socket.d/
-    state: directory
+- name: remove cockpit from public zone
+  firewalld:
+    zone: public
+    service: cockpit
+    state: disabled
+    permanent: yes
 
-- name: write cockpit conf
-  copy:
-    content: |
-      [Socket]
-      ListenStream=
-      ListenStream={{ tailscale_ip_status.stdout }}:9090
-      FreeBind=yes
-    dest: /etc/systemd/system/cockpit.socket.d/listen.conf
-    owner: root
-    group: root
-    mode: '0644'
+- name: add cockpit to internal zone
+  firewalld:
+    zone: internal
+    service: cockpit
+    state: enabled
+    permanent: yes
+
+- name: cockpit config
+  block:
+  - name: create cockpit socket config 'distribution'
+    file:
+      path: /etc/systemd/system/cockpit.socket.d/
+      state: directory
+
+  - name: write cockpit conf
+    copy:
+      content: |
+        [Socket]
+        ListenStream=
+        ListenStream={{ tailscale_ip_status.stdout }}:9090
+        FreeBind=yes
+      dest: /etc/systemd/system/cockpit.socket.d/listen.conf
+      owner: root
+      group: root
+      mode: '0644'
   when:
     - tailscale_ip_status.rc == 0
 
