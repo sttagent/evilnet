@@ -20,6 +20,7 @@
         url: https://pkgs.tailscale.com/stable/centos/9/tailscale.repo
         dest: /etc/yum.repos.d/tailscale.repo
         mode: 0644
+
     - name: enable epel
       dnf:
         name:
@@ -80,7 +81,7 @@
   
   - name: assign tailscale interface to internal zone
     firewalld:
-      zone: internal
+      zone: {{ tailscale_zone }}
       interface: tailscale0
       state: enabled
       permanent: yes
@@ -102,7 +103,7 @@
 
 - name: add cockpit to internal zone
   firewalld:
-    zone: internal
+    zone: {{ tailscale_zone }}
     service: cockpit
     state: enabled
     permanent: yes
