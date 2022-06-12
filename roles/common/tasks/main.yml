@@ -38,6 +38,7 @@
           - tailscale
           - toolbox
           - podman
+          - restic
         state: present
         update_cache: yes
   tags:
