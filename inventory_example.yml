@@ -3,3 +3,9 @@ all:
   hosts:
     evilserver:
       ansible_host:  # ip, hostname
+  
+  main_user_password: 
+
+  evilroots_ssh_pub_key: # "ssh-rsa AAAAB..."
+
+  evilbook_ssh_pub_key: # "ssh-rsa AAAAB..."
