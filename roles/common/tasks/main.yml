@@ -1,4 +1,18 @@
 ---
+- name: copy ssh keys
+  tags: key-copy
+  block:
+    - name: cpy evilroots ssh key
+      authorized_key:
+        user: "{{ main_user }}"
+        state: present
+        key: "{{ evilroots_ssh_pub_key }}"
+    - name: cpy evilbook ssh key
+      authorized_key:
+        user: "{{ main_user }}"
+        state: present
+        key: "{{ evilbook_ssh_pub_key }}"
+
 - name: Packages
   block:
     - name: add tailscale reposotory
