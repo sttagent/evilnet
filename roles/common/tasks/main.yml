@@ -44,7 +44,6 @@
   tags:
     - package-installation
 
-# TODO move tailscale into a block. Block runs if tailscale service is not up and connected.
 - name: enable tailscale daemon
   systemd:
     name: tailscaled
