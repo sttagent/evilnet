@@ -1,1 +1,36 @@
 ---
+- name: Syncthing
+  tags: syncthing-setup
+  block:
+    - name: create syncthing container
+      containers.podman.podman_container:
+        name: evilsync
+        image: {{ syncthing_image }}
+        hostname: evilserver
+        env:
+          PUID: 0
+          PGID: 0
+        ports:
+          - 22000:22000/tcp
+          - 22000:22000/udp
+          - 21027:21026/tcp
+          - 8384:8384       # gui
+        label:
+          io.containers.autoupdate: registry
+        generate_systemd:
+          names: yes
+          new: yes
+    
+    - name: open syncthing port
+      firewalld:
+        zone: {{ tailscale_zone }}
+        service: syncthing
+        state: enabled
+        permanent: yes
+
+    - name: open syncthing-gui port
+      firewalld:
+        zone: {{ tailscale_zone }}
+        service: syncthing-gui
+        state: enabled
+        permanent: yes
