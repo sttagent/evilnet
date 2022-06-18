@@ -6,7 +6,7 @@
       become: false
       containers.podman.podman_container:
         name: evilsync
-        image: {{ syncthing_image }}
+        image: "{{ syncthing_image }}"
         hostname: evilserver
         env:
           PUID: 0
@@ -14,24 +14,36 @@
         ports:
           - 22000:22000/tcp
           - 22000:22000/udp
-          - 21027:21026/tcp
+          - 21027:21027/tcp
           - 8384:8384       # gui
+        volumes:
+          - "/home/{{ main_user }}/data/syncthing:/var/syncthing:Z"
         label:
           io.containers.autoupdate: registry
         generate_systemd:
           names: yes
           new: yes
+          path: "/home/{{ main_user }}/.config/systemd/user/"
+
+    - name: enable generatec evilsync service
+      become: false
+      systemd: 
+        name: container-evilsync
+        scope: user
+        enabled: yes
+        state: started
+        daemon_reload: yes
     
     - name: open syncthing port
       firewalld:
-        zone: {{ tailscale_zone }}
+        zone: "{{ tailscale_zone }}"
         service: syncthing
         state: enabled
         permanent: yes
 
     - name: open syncthing-gui port
       firewalld:
-        zone: {{ tailscale_zone }}
+        zone: "{{ tailscale_zone }}"
         service: syncthing-gui
         state: enabled
         permanent: yes
