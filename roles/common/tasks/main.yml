@@ -40,6 +40,7 @@
           - toolbox
           - podman
           - restic
+          - htop
         state: present
         update_cache: yes
   tags:
@@ -81,7 +82,7 @@
   
   - name: assign tailscale interface to internal zone
     firewalld:
-      zone: {{ tailscale_zone }}
+      zone: "{{ tailscale_zone }}"
       interface: tailscale0
       state: enabled
       permanent: yes
@@ -103,7 +104,7 @@
 
 - name: add cockpit to internal zone
   firewalld:
-    zone: {{ tailscale_zone }}
+    zone: "{{ tailscale_zone }}"
     service: cockpit
     state: enabled
     permanent: yes
