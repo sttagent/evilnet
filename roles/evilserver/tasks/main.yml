@@ -3,6 +3,7 @@
   tags: syncthing-setup
   block:
     - name: create syncthing container
+      become: false
       containers.podman.podman_container:
         name: evilsync
         image: {{ syncthing_image }}
