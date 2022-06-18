@@ -39,3 +39,4 @@
 
   roles:
     - common
+    - evilserver
