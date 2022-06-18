@@ -25,7 +25,7 @@
           new: yes
           path: "/home/{{ main_user }}/.config/systemd/user/"
 
-    - name: enable generatec evilsync service
+    - name: enable generated evilsync service
       become: false
       systemd: 
         name: container-evilsync
