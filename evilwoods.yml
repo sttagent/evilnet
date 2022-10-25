@@ -39,4 +39,4 @@
 
   roles:
     - common
-    - evilserver
+    - syncthing
