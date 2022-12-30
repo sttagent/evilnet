@@ -30,6 +30,7 @@
         - ansible_facts['distribution'] == 'CentOS'
 
     - name: install packages
+      tags: package-installation
       dnf:
         name:
           - tmux
@@ -43,8 +44,6 @@
           - htop
         state: present
         update_cache: yes
-  tags:
-    - package-installation
 
 - name: enable tailscale daemon
   systemd:
@@ -102,7 +101,7 @@
     state: disabled
     permanent: yes
 
-- name: add cockpit to internal zone
+- name: "add cockpit to {{ tailscale_zone }} zone"
   firewalld:
     zone: "{{ tailscale_zone }}"
     service: cockpit
