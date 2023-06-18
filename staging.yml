@@ -1,0 +1,4 @@
+evilwoods:
+  hosts:
+    evilserver:
+      ansible_host: evilwoods.net
