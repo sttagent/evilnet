@@ -1,0 +1,23 @@
+- name: load local config file
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - block:
+      - name: check if external evilwoods var file exists
+        stat:
+          path: "~/.config/evilwoods/evilwoods_ansible_vars.yml"
+        register: evilwoods_ansible_vars_file
+
+      - assert:
+          that:
+            - evilwoods_ansible_vars_file.stat.exists == True
+            - not evilwoods_ansible_vars_file.stat.isdir
+          fail_msg: "Evilwoods var file does not exist."
+          quiet: true
+
+      - name: load variables from loacal config file
+        include_vars:
+          file: ~/.config/evilwoods/evilwoods_ansible_vars.yml
+          name: evilwoods_config
+      when: evilwoods_config is not defined
