@@ -10,6 +10,8 @@
       register: evilwoods_ansible_vars_file
 
     - assert:
-        that: evilwoods_ansible_vars_file.stat.exists == True
+        that:
+          - evilwoods_ansible_vars_file.stat.exists == True
+          - not evilwoods_ansible_vars_file.stat.isdir
         fail_msg: "Evilwoods var file does not exist."
         quiet: true
