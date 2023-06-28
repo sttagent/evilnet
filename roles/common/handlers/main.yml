@@ -9,3 +9,12 @@
     name: cockpit.socket
     state: restarted
     daemon_reload: yes
+
+- name: restart sshd
+  systemd:
+    name: sshd
+    state: restarted
+
+- name: reboot host
+  reboot:
+

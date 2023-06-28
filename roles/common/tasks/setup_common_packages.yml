@@ -1,0 +1,7 @@
+---
+- name: install common packages
+  become: true
+  dnf:
+    name:
+      - tmux
+    state: present

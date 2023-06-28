@@ -1,0 +1,9 @@
+---
+- name: update all packages
+  become: true
+  dnf:
+    name: '*'
+    state: latest
+    update_cache: true
+  notify: reboot host
+

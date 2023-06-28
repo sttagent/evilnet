@@ -1,0 +1,74 @@
+---
+- name: add tailscale reposotory
+  become: true
+  get_url:
+    url: https://pkgs.tailscale.com/stable/rhel/9/tailscale.repo
+    dest: /etc/yum.repos.d/tailscale.repo
+    owner: root
+    group: root
+    mode: 0644
+
+- name: install the tailscale daemon
+  become: true
+  dnf:
+    name: tailscale
+    state: present
+    update_cache: true
+
+- name: enable end start tailscale daemon
+  become: true
+  systemd:
+    name: tailscaled
+    state: started
+    enabled: true
+    daemon_reload: true
+
+- name: is toilscale daemon loggendin?
+  ignore_errors: true
+  no_log: true
+  command: tailscale status
+  changed_when: false
+  register: tailscale_status_commmand
+
+- name: login into tailscale service
+  block:
+    - name: login to tailscale service
+      command: tailscale up --authkey "{{ tailscale_auth_key }}"
+      become: true
+      register: tailscale_up_auth_cmd
+
+    - debug:
+        msg: update tailscale key
+      failed_when:
+        - tailscale_up_auth_cmd.failed
+        - '"invalid key: " in tailscale_up_auth_cmd.stderr'
+  when:
+    - tailscale_status_commmand.failed
+    - '"Logged out." in tailscale_status_commmand.stdout'
+
+- name: does tailscale have an ip
+  command: tailscale ip -4
+  changed_when: false
+  register: tailscale_ip_4_cmd
+
+- assert:
+    that:
+      - "{{ tailscale_ip_4_cmd.stdout is ansible.utils.ip_address }}"
+    msg: tailscale ip -4 did not return an ip address
+
+- name: assign tailscale interface to a zone
+  become: true
+  firewalld:
+    zone: "{{ tailscale_zone }}"
+    interface: tailscale0
+    state: enabled
+    permanent: true
+    immediate: true
+
+- name: accuire tailscale tls certificate
+  become: true
+  command: tailscale cert "{{ inventory_hostname }}.{{ tailscale_domain_name }}"
+  register: tailscale_cert_cmd
+  changed_when:
+    - not "unchanged" in tailscale_cert_cmd.stdout
+

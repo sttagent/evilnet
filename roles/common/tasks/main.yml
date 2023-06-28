@@ -1,146 +1,40 @@
 ---
-- name: copy ssh keys
-  tags: key-copy
-  block:
-    - name: cpy evilroots ssh key
-      authorized_key:
-        user: "{{ main_user }}"
-        state: present
-        key: "{{ evilroots_ssh_pub_key }}"
-    - name: cpy evilbook ssh key
-      authorized_key:
-        user: "{{ main_user }}"
-        state: present
-        key: "{{ evilbook_ssh_pub_key }}"
+- include_tasks:
+    file: update_system.yml
+    apply:
+      tags:
+        - system_update
+  tags:
+    - update_system_tasks
 
-- name: Packages
-  block:
-    - name: add tailscale reposotory
-      get_url:
-        url: https://pkgs.tailscale.com/stable/centos/9/tailscale.repo
-        dest: /etc/yum.repos.d/tailscale.repo
-        mode: 0644
+- include_tasks:
+    file: setup_ssh_access.yml
+    apply:
+      tags:
+        - ssh_access_setup
+  tags:
+    - ssh_access_tasks
 
-    - name: enable epel
-      dnf:
-        name:
-          - epel-release
-        state: present
-      when:
-        - ansible_facts['distribution'] == 'CentOS'
+- include_tasks:
+    file: setup_tailscale.yml
+    apply:
+      tags:
+        - tailscale_setup
+  tags:
+    - tailscale_tasks
 
-    - name: install packages
-      tags: package-installation
-      dnf:
-        name:
-          - tmux
-          - fish
-          - neovim
-          - python3-neovim
-          - tailscale
-          - toolbox
-          - podman
-          - restic
-          - htop
-        state: present
-        update_cache: yes
+- include_tasks:
+    file: setup_cockpit.yml
+    apply:
+      tags:
+        - cockpit_setup
+  tags:
+    - cockpit_tasks
 
-- name: enable tailscale daemon
-  systemd:
-    name: tailscaled
-    state: started
-    enabled: yes
-
-- name: check tailscale status
-  command: tailscale status
-  register: tailscale_status
-  changed_when: false           # nothing changes here but ansible reports changed
-  failed_when:
-    - tailscale_status.rc != 0
-    - "'Logged out.' not in tailscale_status.stdout"
-
-- name: tailscale
-  block:
-  - name: check if tailscale key is defined
-    assert:
-      that:
-        - tailscale_key is defined
-      quiet: true
-      fail_msg: "Tailscale_key not found. Provide tailscale key with --extra-vars 'tailscale_key=...' argument"
-      success_msg: "Tailscale_key found"
-    register: tailscale_key_assert
-    ignore_errors: true
-
-  - name: Bring tailscale up
-    command: tailscale up --auth-key "{{ tailscale_key }}"
-    no_log: true
-    register: tailscale_up_status
-    when:
-      - not tailscale_key_assert.failed
-    changed_when: tailscale_up_status.rc == 0
-  
-  - name: assign tailscale interface to internal zone
-    firewalld:
-      zone: "{{ tailscale_zone }}"
-      interface: tailscale0
-      state: enabled
-      permanent: yes
-  when:
-      - tailscale_status.rc != 0
-      - "'Logged out.' in tailscale_status.stdout"
-
-- name: read tailscale address
-  command: tailscale ip -4
-  changed_when: false
-  register: tailscale_ip_status
-
-- name: remove cockpit from public zone
-  firewalld:
-    zone: public
-    service: cockpit
-    state: disabled
-    permanent: yes
-
-- name: "add cockpit to {{ tailscale_zone }} zone"
-  firewalld:
-    zone: "{{ tailscale_zone }}"
-    service: cockpit
-    state: enabled
-    permanent: yes
-
-- name: cockpit config
-  block:
-  - name: create cockpit socket config 'distribution'
-    file:
-      path: /etc/systemd/system/cockpit.socket.d/
-      state: directory
-
-  - name: write cockpit conf
-    copy:
-      content: |
-        [Socket]
-        ListenStream=
-        ListenStream={{ tailscale_ip_status.stdout }}:9090
-        FreeBind=yes
-      dest: /etc/systemd/system/cockpit.socket.d/listen.conf
-      owner: root
-      group: root
-      mode: '0644'
-  when:
-    - tailscale_ip_status.rc == 0
-
-- name: start cockpit Socket
-  systemd:
-    name: cockpit.socket
-    state: started
-    enabled: true
-
-- name: config sshd_config
-  copy:
-    content: |
-      PermitRootLogin no
-      PasswordAuthentication no
-    dest: /etc/ssh/sshd_config.d/99-evilserver.conf
-    owner: root
-    group: root
-    mode: '0600'
+- include_tasks:
+    file: setup_common_packages.yml
+    apply:
+      tags:
+        - common_packages_setup
+  tags:
+    - common_packages_tasks

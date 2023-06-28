@@ -1,0 +1,20 @@
+---
+- name: upload ssh keys
+  authorized_key:
+    user: "{{ main_user }}"
+    state: present
+    key: "{{ item }}"
+  with_items:
+    - "{{ evilroots_ssh_key }}"
+
+- name: config sshd_config
+  become: true
+  copy:
+    content: |
+      PermitRootLogin no
+      PasswordAuthentication no
+    dest: /etc/ssh/sshd_config.d/99-evilserver.conf
+    owner: root
+    group: root
+    mode: '0600'
+  notify: restart sshd
