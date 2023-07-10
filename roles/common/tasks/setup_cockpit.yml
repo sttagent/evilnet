@@ -1,1 +1,16 @@
 ---
+- name: close cockpit port in public zone
+  become: true
+  firewalld:
+    zone: public
+    service: cockpit
+    state: disabled
+    permanent: true
+    immediate: true
+
+- name: enable cockpit service socket
+  become: true
+  systemd:
+    name: cockpit.socket
+    enabled: true
+    state: started
