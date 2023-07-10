@@ -3,38 +3,38 @@
     file: update_system.yml
     apply:
       tags:
-        - system_update
+        - update_system
   tags:
-    - update_system_tasks
+    - update_system
 
 - include_tasks:
     file: setup_ssh_access.yml
     apply:
       tags:
-        - ssh_access_setup
+        - setup_ssh_access
   tags:
-    - ssh_access_tasks
+    - setup_ssh_access
 
 - include_tasks:
     file: setup_tailscale.yml
     apply:
       tags:
-        - tailscale_setup
+        - setup_tailscale
   tags:
-    - tailscale_tasks
+    - setup_tailscale
 
 - include_tasks:
     file: setup_cockpit.yml
     apply:
       tags:
-        - cockpit_setup
+        - setup_cockpit
   tags:
-    - cockpit_tasks
+    - setup_cockpit
 
 - include_tasks:
     file: setup_common_packages.yml
     apply:
       tags:
-        - common_packages_setup
+        - setup_common_packages
   tags:
-    - common_packages_tasks
+    - setup_common_packages
