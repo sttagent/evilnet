@@ -1,0 +1,27 @@
+---
+- name: redirect ports 80
+  become: true
+  firewalld:
+    zone:  public
+    port_forward:
+      port: 80
+      proto: tcp
+      toport: 8080
+    state: enabled
+    immediate: true
+    permanent: true
+
+- name: redirect ports 443
+  become: true
+  firewalld:
+    zone:  public
+    port_forward:
+      port: 443
+      proto: tcp
+      toport: 8443
+    state: enabled
+    immediate: true
+    permanent: true
+
+- name: create and run caddy container
+  podman_containers:

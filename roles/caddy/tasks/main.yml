@@ -1,0 +1,8 @@
+---
+- include_tasks:
+    file: caddy_setup.yml
+    apply:
+      tags:
+        - caddy_setup
+  tags:
+    - caddy_setup
