@@ -25,3 +25,15 @@
 
 - name: create and run caddy container
   podman_containers:
+    name: evil_caddy
+    image: docker.io/library/caddy:latest
+    state: started
+    recreate: true
+    detach: true
+    tty: true
+    expose:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ~/Containers/data/caddy/Caddyfile:/etc/caddy/Caddyfile:Z"
+      - "~/Containers/data/caddy/data:/data:Z"
