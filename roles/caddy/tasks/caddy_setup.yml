@@ -4,9 +4,9 @@
   firewalld:
     zone:  public
     port_forward:
-      port: 80
-      proto: tcp
-      toport: 8080
+      - port: 80
+        proto: tcp
+        toport: 8080
     state: enabled
     immediate: true
     permanent: true
@@ -16,24 +16,25 @@
   firewalld:
     zone:  public
     port_forward:
-      port: 443
-      proto: tcp
-      toport: 8443
+      - port: 443
+        proto: tcp
+        toport: 8443
     state: enabled
     immediate: true
     permanent: true
 
 - name: create and run caddy container
-  podman_containers:
+  containers.podman.podman_container:
     name: evil_caddy
     image: docker.io/library/caddy:latest
     state: started
     recreate: true
     detach: true
     tty: true
-    expose:
+    force_restart: true
+    ports:
       - "8080:80"
       - "8443:443"
     volumes:
-      - ~/Containers/data/caddy/Caddyfile:/etc/caddy/Caddyfile:Z"
-      - "~/Containers/data/caddy/data:/data:Z"
+      - "/home/{{ caddy_container_user }}/Containers/data/caddy/Caddyfile:/etc/caddy/Caddyfile:Z"
+      - "/home/{{ caddy_container_user }}/Containers/data/caddy/data:/data:Z"
