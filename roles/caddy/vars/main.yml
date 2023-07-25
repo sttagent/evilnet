@@ -1,0 +1,6 @@
+---
+# caddy
+caddy_container_user: "{{ main_user }}"
+caddy_container_name: evil_caddy
+caddy_container_name: "caddy"
+

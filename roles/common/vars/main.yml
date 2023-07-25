@@ -1,0 +1,6 @@
+---
+# tailscale
+tailscale_auth_key: "tskey-auth-k2mrpC5CNTRL-aWLAJXX493HsaNBPET3pxGmyMjDCaAiH"
+tailscale_domain_name: king-hammerhead.ts.net
+tailscale_zone: trusted
+
