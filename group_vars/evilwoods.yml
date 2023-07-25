@@ -1,7 +1,6 @@
 ---
 # main user information
 main_user: aitvaras
-main_user_password: swept9-outscore-awhile
 
 # keys to add to authorized keys
 evilroots_ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHxJkDUczhrYoWjMypH9h1sDuTtovmnqAGODqhYT4wT9 aitvaras@evilroots"
