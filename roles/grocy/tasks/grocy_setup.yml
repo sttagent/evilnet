@@ -1,0 +1,75 @@
+---
+- name: create grocy pod
+  become_user: "{{ grocy_container_user }}"
+  containers.podman.podman_pod:
+    name: "{{ grocy_pod_name }}"
+    state: created
+    ports:
+      - "{{ grocy_host_port }}:{{ grocy_pod_port }}"
+    generate_systemd:
+      names: true
+      new: true
+      separator: "_"
+      path: "/home/{{ grocy_container_user }}/.config/systemd/user"
+
+- name: create gorcy backend container
+  become_user: "{{ grocy_container_user }}"
+  containers.podman.podman_container:
+    name: "{{ grocy_backend_container_name }}"
+    image: "{{ grocy_backend_image }}:{{ grocy_backend_version }}"
+    pod: "{{ grocy_pod_name }}"
+    state: created
+    detach: true
+    tty: true
+    volumes:
+      - "/home/{{ grocy_container_user }}/Containers/data/grocy/data/:/var/www/data/:Z,U"
+    generate_systemd:
+      names: true
+      new: true
+      separator: "_"
+      path: "/home/{{ grocy_container_user }}/.config/systemd/user"
+      requires: "pod_{{ grocy_pod_name }}"
+
+- name: create grocy frontend container
+  become_user: "{{ grocy_container_user }}"
+  containers.podman.podman_container:
+    name: "{{ grocy_frontend_container_name }}"
+    image: "{{ grocy_frontend_image }}:{{ grocy_frontend_version }}"
+    pod: "{{ grocy_pod_name }}"
+    state: created
+    detach: true
+    tty: true
+    generate_systemd:
+      names: true
+      new: true
+      separator: "_"
+      path: "/home/{{ grocy_container_user }}/.config/systemd/user"
+      requires: "pod_{{ grocy_pod_name }}"
+
+- name: start grocy pod service
+  become_user: "{{ grocy_container_user }}"
+  systemd:
+    scope: user
+    name: "pod_{{ grocy_pod_name }}"
+    state: started
+    enabled: true
+    daemon_reload: true
+
+- name: start grocy backend service
+  become_user: "{{ grocy_container_user }}"
+  systemd:
+    scope: user
+    name: "container_{{ grocy_backend_container_name }}"
+    state: started
+    enabled: true
+    daemon_reload: true
+
+- name: start grocy frontend service
+  become_user: "{{ grocy_container_user }}"
+  systemd:
+    scope: user
+    name: "container_{{ grocy_frontend_container_name }}"
+    state: started
+    enabled: true
+    daemon_reload: true
+

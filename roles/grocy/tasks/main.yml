@@ -1,0 +1,8 @@
+---
+- include_tasks:
+    file: grocy_setup.yml
+    apply:
+      tags:
+        - grocy_setup
+  tags:
+    - grocy_setup
