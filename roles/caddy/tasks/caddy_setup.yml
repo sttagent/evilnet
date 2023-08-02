@@ -24,8 +24,9 @@
     permanent: true
 
 - name: create and run caddy container
+  becoame_user: "{{ container_user }}"
   containers.podman.podman_container:
-    name: "{{ caddy_container_name }}"
+    name: "{{ container_name }}"
     image: docker.io/library/caddy:latest
     state: started
     detach: true
@@ -35,18 +36,18 @@
       - "8080:80"
       - "8443:443"
     volumes:
-      - "/home/{{ main_user }}/Containers/data/caddy/Caddyfile:/etc/caddy/Caddyfile:Z"
-      - "/home/{{ main_user }}/Containers/data/caddy/data:/data:Z"
+      - "/home/{{ container_user }}/Containers/data/caddy/Caddyfile:/etc/caddy/Caddyfile:Z"
+      - "/home/{{ container_user }}/Containers/data/caddy/data:/data:Z"
     generate_systemd:
       names: true
       new: true
       separator: "_"
-      path: "/home/{{ main_user }}/.config/systemd/user"
+      path: "/home/{{ container_user }}/.config/systemd/user"
 
-- name: enable "{{ caddy_container_name }}" container service
+- name: enable "{{ container_name }}" container service
   systemd:
     scope: user
-    name: "container_{{ caddy_container_name }}"
+    name: "container_{{ container_name }}"
     enabled: true
     state: started
     daemon_reload: true

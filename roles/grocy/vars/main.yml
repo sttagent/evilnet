@@ -1,11 +1,11 @@
 ---
-grocy_pod_name: evilgrocy
-grocy_container_user: "{{ main_user }}"
-grocy_host_port: 8081
-grocy_pod_port: 8080
-grocy_backend_container_name: backend
-grocy_backend_image: "docker.io/grocy/backend"
-grocy_backend_version: v3.3.2
-grocy_frontend_container_name: frontend
-grocy_frontend_version: v3.3.2
-grocy_frontend_image: "docker.io/grocy/frontend"
+pod_name: evilgrocy
+container_user: "{{ main_user }}"
+host_port: 8081
+pod_port: 8080
+backend_name: "{{ pod_name }}_backend"
+backend_image: "docker.io/grocy/backend"
+backend_version: v3.3.2
+frontend_name: "{{ pod_name }}_frontend"
+frontend_version: v3.3.2
+frontend_image: "docker.io/grocy/frontend"
