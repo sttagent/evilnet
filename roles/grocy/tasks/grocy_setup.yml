@@ -3,7 +3,7 @@
   become_user: "{{ grocy_container_user }}"
   containers.podman.podman_pod:
     name: "{{ grocy_pod_name }}"
-    state: present
+    state: created
     ports:
       - "{{ grocy_host_port }}:{{ grocy_pod_port }}"
     generate_systemd:
@@ -18,7 +18,7 @@
     name: "{{ grocy_backend_container_name }}"
     image: "{{ grocy_backend_image }}:{{ grocy_backend_version }}"
     pod: "{{ grocy_pod_name }}"
-    state: present
+    state: created
     detach: true
     tty: true
     env:
@@ -40,7 +40,7 @@
     name: "{{ grocy_frontend_container_name }}"
     image: "{{ grocy_frontend_image }}:{{ grocy_frontend_version }}"
     pod: "{{ grocy_pod_name }}"
-    state: present
+    state: craeted
     detach: true
     tty: true
     generate_systemd:
