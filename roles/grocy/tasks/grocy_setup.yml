@@ -1,20 +1,32 @@
 ---
-- name: create grocy pod
+- name: "stop {{ pod_name }} serice"
+  become_user: "{{ container_user }}"
+  systemd:
+    scope: user
+    name: "{{ item }}"
+    enabled: true
+    state: stopped
+  with_items:
+    - "pod_{{ pod_name }}"
+    - "container_{{ backend_name }}"
+    - "container_{{ frontend_name }}"
+  loop_control:
+    pause: 1
+  ignore_errors: true
+
+- name: "create {{ pod_name }} pod"
   become_user: "{{ container_user }}"
   containers.podman.podman_pod:
     name: "{{ pod_name }}"
     state: created
+    add_host:
+      - "backend:127.0.0.1"
     ports:
       - "{{ host_port }}:{{ pod_port }}"
     label:
       io.containers.autoupdate: registry
-    generate_systemd:
-      names: true
-      new: true
-      separator: "_"
-      path: "/home/{{ container_user }}/.config/systemd/user"
 
-- name: create gorcy backend container
+- name: "create {{ pod_name }}  backend container"
   become_user: "{{ container_user }}"
   containers.podman.podman_container:
     name: "{{ backend_name }}"
@@ -31,14 +43,8 @@
       - "/home/{{ container_user }}/Containers/data/grocy/data/:/var/www/data/:Z,U"
     label:
       io.containers.autoupdate: registry
-    generate_systemd:
-      names: true
-      new: true
-      separator: "_"
-      path: "/home/{{ container_user }}/.config/systemd/user"
-      requires: "pod_{{ pod_name }}"
 
-- name: create grocy frontend container
+- name: "create {{ pod_name }} frontend container"
   become_user: "{{ container_user }}"
   containers.podman.podman_container:
     name: "{{ frontend_name }}"
@@ -49,37 +55,26 @@
     tty: true
     label:
       io.containers.autoupdate: registry
-    generate_systemd:
-      names: true
-      new: true
-      separator: "_"
-      path: "/home/{{ container_user }}/.config/systemd/user"
-      requires: "pod_{{ pod_name }}"
 
-- name: start grocy pod service
+- name: "generate {{ pod_name }} service files"
+  become_user: "{{ container_user }}"
+  containers.podman.podman_generate_systemd:
+    name: "{{ pod_name }}"
+    use_names: true
+    separator: "_"
+    dest: "/home/{{ container_user }}/.config/systemd/user"
+
+- name: "start {{ pod_name }} serice"
   become_user: "{{ container_user }}"
   systemd:
     scope: user
-    name: "pod_{{ pod_name }}"
-    state: started
+    name: "{{ item }}"
     enabled: true
-    daemon_reload: true
-
-- name: start grocy backend service
-  become_user: "{{ container_user }}"
-  systemd:
-    scope: user
-    name: "container_{{ backend_name }}"
     state: started
-    enabled: true
     daemon_reload: true
-
-- name: start grocy frontend service
-  become_user: "{{ container_user }}"
-  systemd:
-    scope: user
-    name: "container_{{ frontend_name }}"
-    state: started
-    enabled: true
-    daemon_reload: true
-
+  with_items:
+    - "pod_{{ pod_name }}"
+    - "container_{{ backend_name }}"
+    - "container_{{ frontend_name }}"
+  loop_control:
+    pause: 1
