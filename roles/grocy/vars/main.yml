@@ -5,7 +5,7 @@ host_port: 8081
 pod_port: 8080
 backend_name: "{{ pod_name }}_backend"
 backend_image: "docker.io/grocy/backend"
-backend_version: v3.3.2
+backend_version: v4.0.0
 frontend_name: "{{ pod_name }}_frontend"
-frontend_version: v3.3.2
+frontend_version: v4.0.0
 frontend_image: "docker.io/grocy/frontend"
