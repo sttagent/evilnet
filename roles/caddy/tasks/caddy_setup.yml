@@ -1,50 +1,64 @@
 ---
-- name: redirect ports 80
+# can only forward one port at a time
+- name: redirect port 80
   become: true
   firewalld:
-    zone:  public
+    zone: public
     port_forward:
       - port: 80
         proto: tcp
-        toport: 8080
+        toport: "{{ host_port }}"
     state: enabled
     immediate: true
     permanent: true
 
-- name: redirect ports 443
+# can only forward one port at a time
+- name: redirect port 443
   become: true
   firewalld:
-    zone:  public
+    zone: public
     port_forward:
       - port: 443
         proto: tcp
-        toport: 8443
+        toport: "{{ host_tls_port }}"
     state: enabled
     immediate: true
     permanent: true
 
-- name: create and run caddy container
-  becoame_user: "{{ container_user }}"
+- name: stop "{{ container_name }}" service
+  become_user: "{{ container_user }}"
+  systemd:
+    scope: user
+    name: "container_{{ container_name }}"
+    state: stopped
+  ignore_errors: true
+
+- name: "create {{ container_name }} container"
+  become_user: "{{ container_user }}"
   containers.podman.podman_container:
     name: "{{ container_name }}"
-    image: docker.io/library/caddy:latest
-    state: started
+    image: "{{ container_image }}:{{ image_tag }}"
+    state: created
     detach: true
     tty: true
     force_restart: true
     ports:
-      - "8080:80"
-      - "8443:443"
+      - "{{ host_port }}:{{ container_port }}"
+      - "{{ host_tls_port }}:{{ container_tls_port }}"
     volumes:
       - "/home/{{ container_user }}/Containers/data/caddy/Caddyfile:/etc/caddy/Caddyfile:Z"
       - "/home/{{ container_user }}/Containers/data/caddy/data:/data:Z"
-    generate_systemd:
-      names: true
-      new: true
-      separator: "_"
-      path: "/home/{{ container_user }}/.config/systemd/user"
+
+- name: "generate {{ container_name }} service files"
+  become_user: "{{ container_user }}"
+  containers.podman.podman_generate_systemd:
+    name: "{{ container_name }}"
+    use_names: true
+    separator: "_"
+    dest: "/home/{{ container_user }}/.config/systemd/user"
 
 - name: enable "{{ container_name }}" container service
+  become_user: "{{ container_user }}"
   systemd:
     scope: user
     name: "container_{{ container_name }}"

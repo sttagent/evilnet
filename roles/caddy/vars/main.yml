@@ -1,5 +1,12 @@
 ---
 # caddy
 container_user: "{{ main_user }}"
-container_name: evil_caddy
+container_name: evilcaddy
+container_image: docker.io/library/caddy
+image_tag: latest
+host_port: 8080
+host_tls_port: 8443
+container_port: 80
+container_tls_port: 443
+
 

@@ -6,3 +6,4 @@
         - caddy_setup
   tags:
     - caddy_setup
+    - include_caddy_tasks
