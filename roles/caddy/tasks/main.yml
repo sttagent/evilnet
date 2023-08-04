@@ -1,9 +1,21 @@
 ---
 - include_tasks:
+    file: caddy_firewall_setup.yml
+    apply:
+      become: true
+      tags:
+        - caddy_setup
+        - cadd_firewall_setup
+  tags:
+    - caddy_setup
+    - caddy_firewall_tasks
+
+- include_tasks:
     file: caddy_setup.yml
     apply:
+      become_user: "{{ container_user }}"
       tags:
         - caddy_setup
   tags:
     - caddy_setup
-    - include_caddy_tasks
+    - caddy_tasks

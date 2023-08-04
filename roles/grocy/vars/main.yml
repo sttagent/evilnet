@@ -3,6 +3,7 @@ pod_name: evilgrocy
 container_user: "{{ main_user }}"
 host_port: 8081
 pod_port: 8080
+data: "{{ data_dir_name }}/grocy/data"
 backend_name: "{{ pod_name }}_backend"
 backend_image: "docker.io/grocy/backend"
 backend_version: v4.0.0

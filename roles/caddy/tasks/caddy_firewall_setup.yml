@@ -1,0 +1,27 @@
+---
+# can only forward one port at a time
+- name: redirect port 80
+  become: true
+  firewalld:
+    zone: public
+    port_forward:
+      - port: 80
+        proto: tcp
+        toport: "{{ host_port }}"
+    state: enabled
+    immediate: true
+    permanent: true
+
+# can only forward one port at a time
+- name: redirect port 443
+  become: true
+  firewalld:
+    zone: public
+    port_forward:
+      - port: 443
+        proto: tcp
+        toport: "{{ host_tls_port }}"
+    state: enabled
+    immediate: true
+    permanent: true
+

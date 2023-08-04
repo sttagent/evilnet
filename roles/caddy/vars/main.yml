@@ -4,6 +4,10 @@ container_user: "{{ main_user }}"
 container_name: evilcaddy
 container_image: docker.io/library/caddy
 image_tag: latest
+config: "{{data_dir_name}}/caddy/config"
+data: "{{data_dir_name}}/caddy/data"
+ 
+mage_tag: latest
 host_port: 8080
 host_tls_port: 8443
 container_port: 80

@@ -1,32 +1,5 @@
 ---
-# can only forward one port at a time
-- name: redirect port 80
-  become: true
-  firewalld:
-    zone: public
-    port_forward:
-      - port: 80
-        proto: tcp
-        toport: "{{ host_port }}"
-    state: enabled
-    immediate: true
-    permanent: true
-
-# can only forward one port at a time
-- name: redirect port 443
-  become: true
-  firewalld:
-    zone: public
-    port_forward:
-      - port: 443
-        proto: tcp
-        toport: "{{ host_tls_port }}"
-    state: enabled
-    immediate: true
-    permanent: true
-
 - name: stop "{{ container_name }}" service
-  become_user: "{{ container_user }}"
   systemd:
     scope: user
     name: "container_{{ container_name }}"
@@ -34,7 +7,6 @@
   ignore_errors: true
 
 - name: "create {{ container_name }} container"
-  become_user: "{{ container_user }}"
   containers.podman.podman_container:
     name: "{{ container_name }}"
     image: "{{ container_image }}:{{ image_tag }}"
@@ -46,19 +18,20 @@
       - "{{ host_port }}:{{ container_port }}"
       - "{{ host_tls_port }}:{{ container_tls_port }}"
     volumes:
-      - "/home/{{ container_user }}/Containers/data/caddy/Caddyfile:/etc/caddy/Caddyfile:Z"
-      - "/home/{{ container_user }}/Containers/data/caddy/data:/data:Z"
+      - "{{ ansible_env.HOME }}/{{ config }}/Caddyfile:/etc/caddy/Caddyfile:Z"
+      - "{{ ansible_env.HOME }}/{{ data }}:/data:Z"
+    labels:
+      - io.containers.autoupdate: registry
+
 
 - name: "generate {{ container_name }} service files"
-  become_user: "{{ container_user }}"
   containers.podman.podman_generate_systemd:
     name: "{{ container_name }}"
     use_names: true
     separator: "_"
-    dest: "/home/{{ container_user }}/.config/systemd/user"
+    dest: "{{ ansible_env.HOME }}/.config/systemd/user"
 
 - name: enable "{{ container_name }}" container service
-  become_user: "{{ container_user }}"
   systemd:
     scope: user
     name: "container_{{ container_name }}"

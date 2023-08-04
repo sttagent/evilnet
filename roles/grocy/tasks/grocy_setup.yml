@@ -1,21 +1,19 @@
 ---
 - name: "stop {{ pod_name }} serice"
-  become_user: "{{ container_user }}"
   systemd:
     scope: user
     name: "{{ item }}"
     enabled: true
     state: stopped
   with_items:
-    - "pod_{{ pod_name }}"
-    - "container_{{ backend_name }}"
     - "container_{{ frontend_name }}"
+    - "container_{{ backend_name }}"
+    - "pod_{{ pod_name }}"
   loop_control:
     pause: 1
   ignore_errors: true
 
 - name: "create {{ pod_name }} pod"
-  become_user: "{{ container_user }}"
   containers.podman.podman_pod:
     name: "{{ pod_name }}"
     state: created
@@ -27,7 +25,6 @@
       io.containers.autoupdate: registry
 
 - name: "create {{ pod_name }}  backend container"
-  become_user: "{{ container_user }}"
   containers.podman.podman_container:
     name: "{{ backend_name }}"
     image: "{{ backend_image }}:{{ backend_version }}"
@@ -40,12 +37,11 @@
       GROCY_CULTURE: sv_SE
       GROCY_CURRENCY: SEK
     volumes:
-      - "/home/{{ container_user }}/Containers/data/grocy/data/:/var/www/data/:Z,U"
+      - "{{ ansible_env.HOME }}/{{ data }}:/var/www/data:Z,U"
     label:
       io.containers.autoupdate: registry
 
 - name: "create {{ pod_name }} frontend container"
-  become_user: "{{ container_user }}"
   containers.podman.podman_container:
     name: "{{ frontend_name }}"
     image: "{{ frontend_image }}:{{ frontend_version }}"
@@ -57,15 +53,13 @@
       io.containers.autoupdate: registry
 
 - name: "generate {{ pod_name }} service files"
-  become_user: "{{ container_user }}"
   containers.podman.podman_generate_systemd:
     name: "{{ pod_name }}"
     use_names: true
     separator: "_"
-    dest: "/home/{{ container_user }}/.config/systemd/user"
+    dest: "{{ ansible_env.HOME }}/.config/systemd/user"
 
 - name: "start {{ pod_name }} serice"
-  become_user: "{{ container_user }}"
   systemd:
     scope: user
     name: "{{ item }}"

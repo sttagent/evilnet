@@ -5,3 +5,5 @@ main_user: aitvaras
 # keys to add to authorized keys
 evilroots_ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHxJkDUczhrYoWjMypH9h1sDuTtovmnqAGODqhYT4wT9 aitvaras@evilroots"
 
+data_dir_name: Containers
+
