@@ -17,6 +17,7 @@
   containers.podman.podman_pod:
     name: "{{ pod_name }}"
     state: created
+    userns: keep-id
     add_host:
       - "backend:127.0.0.1"
     ports:
