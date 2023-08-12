@@ -13,7 +13,6 @@
     state: created
     detach: true
     tty: true
-    force_restart: true
     ports:
       - "{{ host_port }}:{{ container_port }}"
       - "{{ host_tls_port }}:{{ container_tls_port }}"
@@ -21,7 +20,7 @@
       - "{{ ansible_env.HOME }}/{{ config }}/Caddyfile:/etc/caddy/Caddyfile:Z"
       - "{{ ansible_env.HOME }}/{{ data }}:/data:Z"
     labels:
-      - io.containers.autoupdate: registry
+      io.containers.autoupdate: registry
 
 
 - name: "generate {{ container_name }} service files"

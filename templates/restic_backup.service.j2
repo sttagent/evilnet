@@ -1,0 +1,27 @@
+[Unit]
+Description={{ pod_name }} restic backup
+Documentation=https://restic.readthedocs.io
+Conflicts={{ conflicts }}
+OnSuccess={{ conflicts }}
+OnFailure={{ conflicts }}
+
+[Service]
+Type=oneshot
+ExecStartPre=-/usr/bin/podman rm -f {{ restic_backup_cont_name }}
+ExecStart=-/usr/bin/podman run \
+                    --name {{ restic_backup_cont_name }} \
+                    --rm \
+                    --hostname {{ inventory_hostname }} \
+                    {{ restic_image }}:{{ restic_image_tag }} \
+                    --verbose \
+                    init
+ExecStart=/usr/bin/podman run \
+                    --name {{ restic_backup_cont_name }} \
+                    --rm \
+                    --hostname {{ inventory_hostname }} \
+                    --env-file {{ ansible_env.HOME }}/{{ restic_backup_config_dir }}/restic_backup.env \
+                    -v {{ ansible_env.HOME }}/{{ volume_directory }}:/mnt:Z \
+                    {{ restic_image }}:{{ restic_image_tag }} \
+                    --verbose \
+                    --tag {{ tag }} \
+                    backup /mnt/{{ folder_to_backup }}

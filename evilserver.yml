@@ -9,5 +9,6 @@
   roles:
     - common
     - caddy
-    - grocy
+    - role: grocy
+      tags: grocy
       # - syncthing

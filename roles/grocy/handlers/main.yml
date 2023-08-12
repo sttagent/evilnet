@@ -1,0 +1,51 @@
+---
+- name: "restart {{ pod_name }} timer"
+  systemd:
+    scope: user
+    name: "{{ pod_name }}_{{ restic_service_name }}.timer"
+    state: restarted
+    enabled: true
+    daemon_reload: true
+
+- name: "stop pod_{{ pod_name }}"
+  systemd:
+    scope: user
+    name: "pod_{{ pod_name }}"
+    state: stopped
+
+- name: "stop container_{{ frontend_name }}"
+  systemd:
+    scope: user
+    name: "container_{{ frontend_name }}"
+    state: stopped
+
+- name: "stop container_{{ backend_name }}"
+  systemd:
+    scope: user
+    name: "container_{{ backend_name }}"
+    state: stopped
+
+- name: "start pod_{{ pod_name }}"
+  systemd:
+    scope: user
+    name: "pod_{{ pod_name }}"
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: "start container_{{ frontend_name }}"
+  systemd:
+    scope: user
+    name: "container_{{ frontend_name }}"
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: "start container_{{ backend_name }}"
+  systemd:
+    scope: user
+    name: "container_{{ backend_name }}"
+    enabled: true
+    state: started
+    daemon_reload: true
+

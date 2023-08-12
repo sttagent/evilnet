@@ -1,0 +1,26 @@
+---
+- name: "create {{ pod_name }} restic backup envronment file"
+  template:
+    src: restic_backup.env.j2
+    dest: "{{ ansible_env.HOME }}/{{ restic_backup_config_dir }}/restic_backup.env"
+    mode: '600'
+
+- name: "create {{ pod_name }} backup resvice"
+  vars:
+    restic_backup_cont_name: "{{ pod_name }}_backup"
+    conflicts: "pod_{{pod_name}}.service \
+                container_{{ pod_name}}_backend.service \
+                container_{{ pod_name }}_frontend.service"
+  template:
+    src: restic_backup.service.j2
+    dest: "{{ ansible_env.HOME }}/.config/systemd/user/{{ pod_name }}_{{ restic_service_name }}.service"
+    mode: '644'
+
+- name: "create {{ pod_name }} restic backup timer"
+  template:
+    src: restic_backup.timer.j2
+    dest: "{{ ansible_env.HOME }}/.config/systemd/user/{{ pod_name }}_{{ restic_service_name }}.timer"
+    mode: '600'
+  notify:
+    - "restart {{ pod_name }} timer"
+

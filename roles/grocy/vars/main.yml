@@ -1,10 +1,12 @@
 ---
-pod_name: evilgrocy
 container_user: "{{ main_user }}"
+pod_name: evilgrocy
 host_port: 8081
 pod_port: 8080
-data: "{{ data_dir_name }}/grocy/data"
+data: "{{ volume_directory }}/grocy/data"
+folder_to_backup: grocy
 backend_name: "{{ pod_name }}_backend"
+tag: "{{ pod_name }}"
 backend_image: "docker.io/grocy/backend"
 backend_version: v4.0.0
 frontend_name: "{{ pod_name }}_frontend"

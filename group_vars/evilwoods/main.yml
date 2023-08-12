@@ -1,0 +1,17 @@
+---
+# main user information
+main_user: aitvaras
+
+# keys to add to authorized keys
+evilroots_ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHxJkDUczhrYoWjMypH9h1sDuTtovmnqAGODqhYT4wT9 aitvaras@evilroots"
+
+volume_directory: Containers
+
+# restic service
+restic_service_name: restic_backup
+restic_backup_config_dir: "{{ volume_directory }}/{{ restic_service_name }}/config"
+restic_image: docker.io/restic/restic
+restic_image_tag: latest
+restic_repo_path: s3:s3.eu-central-003.backblazeb2.com/evilserver-data-backup
+
+
