@@ -1,0 +1,16 @@
+[Unit]
+Description=Evilwoods {{ service_name }} sevice
+
+[Container]
+Image={{ image }}
+PublishPort={{ host_port }}:{{ container_port }}
+PublishPort={{ host_tls_port }}:{{ container_tls_port }}
+Volume={{ config }}/Caddyfile:/etc/caddy/Caddyfile:Z
+Volume={{ data }}:/data:Z
+Label=io.containers.autoupdate=registry
+
+[Service]
+TimeoutSartSec=900
+
+[Install]
+WantedBy=default.target

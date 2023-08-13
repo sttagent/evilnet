@@ -1,11 +1,14 @@
 ---
 # caddy
-container_user: "{{ main_user }}"
-container_name: evilcaddy
-container_image: docker.io/library/caddy
+user: "{{ main_user }}"
+service_name: evilcaddy
+image_path: docker.io/library/caddy
 image_tag: latest
-config: "{{ volume_directory }}/caddy/config"
-data: "{{ volume_directory }}/caddy/data"
+image: "{{ image_path }}:{{ image_tag }}"
+config_dir: "{{ volume_directory }}/caddy/config"
+data_dir: "{{ volume_directory }}/caddy/data"
+
+unit_file_name: "container_{{ service_name }}"
  
 mage_tag: latest
 host_port: 8080
