@@ -2,7 +2,7 @@
 - include_tasks:
     file: grocy_setup.yml
     apply:
-      become_user: "{{ container_user }}"
+      become_user: "{{ user }}"
       tags:
         - grocy_service
   tags:
@@ -11,7 +11,7 @@
 - include_tasks:
     file: grocy_backup_setup.yml
     apply:
-      become_user: "{{ container_user }}"
+      become_user: "{{ user }}"
       tags:
         - grocy_backup
   tags:

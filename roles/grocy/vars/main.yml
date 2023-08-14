@@ -1,14 +1,18 @@
 ---
-container_user: "{{ main_user }}"
-pod_name: evilgrocy
+user: "{{ main_user }}"
+become_use: "{{ user }}"
+quadlet_dir: "{{ ansible_env.HOME }}/.config/containers/systemd"
+systemd_unit_dir: "{{ ansible_env.HOME }}/.config/systemd/user"
+service_name: evilgrocy
 host_port: 8081
 pod_port: 8080
-data: "{{ volume_directory }}/grocy/data"
+config_dir: "{{ ansible_env.HOME }}/{{ volume_directory }}/grocy/config"
+data_dir: "{{ ansible_env.HOME }}/{{ volume_directory }}/grocy/data"
 folder_to_backup: grocy
-backend_name: "{{ pod_name }}_backend"
-tag: "{{ pod_name }}"
+backend_name: "{{ service_name }}_backend"
+backup_tag: "{{ service_name }}"
 backend_image: "docker.io/grocy/backend"
-backend_version: v4.0.0
-frontend_name: "{{ pod_name }}_frontend"
-frontend_version: v4.0.0
+backend_image_tag: v4.0.0
+frontend_name: "{{ service_name }}_frontend"
+frontend_image_tag: v4.0.0
 frontend_image: "docker.io/grocy/frontend"

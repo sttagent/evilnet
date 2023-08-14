@@ -1,58 +1,24 @@
 ---
-- name: "create {{ pod_name }} pod"
-  containers.podman.podman_pod:
-    name: "{{ pod_name }}"
-    state: created
-    userns: keep-id
-    add_host:
-      - "backend:127.0.0.1"
-    ports:
-      - "{{ host_port }}:{{ pod_port }}"
-    label:
-      io.containers.autoupdate: registry
-  notify:
-    - "stop pod_{{ pod_name }}"
-    - "start pod_{{ pod_name }}"
+- name: check if "{{ item }} exists"
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  with_items:
+    - "{{ quadlet_dir }}"
+    - "{{ config_dir }}"
+    - "{{ data_dir }}"
 
-- name: "create {{ pod_name }} backend container"
-  containers.podman.podman_container:
-    name: "{{ backend_name }}"
-    image: "{{ backend_image }}:{{ backend_version }}"
-    pod: "{{ pod_name }}"
-    state: created
-    detach: true
-    tty: true
-    env:
-      GROCY_MODE: production
-      GROCY_CULTURE: sv_SE
-      GROCY_CURRENCY: SEK
-    volumes:
-      - "{{ ansible_env.HOME }}/{{ data }}:/var/www/data:Z,U"
-    label:
-      io.containers.autoupdate: registry
-  notify:
-    - "stop container_{{ backend_name }}"
-    - "start container_{{ backend_name }}"
+- name: create "{{ service_name }} kube file"
+  template:
+    src: evilgrocy.kube.yml.j2
+    dest: "{{ config_dir }}/{{ service_name }}.kube.yml"
 
-- name: "create {{ pod_name }} frontend container"
-  containers.podman.podman_container:
-    name: "{{ frontend_name }}"
-    image: "{{ frontend_image }}:{{ frontend_version }}"
-    pod: "{{ pod_name }}"
-    state: created
-    detach: true
-    tty: true
-    label:
-      io.containers.autoupdate: registry
+- name: create "{{ service_name }} kube file"
+  template:
+    src: evilgrocy.kube.j2
+    dest: "{{ quadlet_dir }}/{{ service_name }}.kube"
   notify:
-    - "stop container_{{ frontend_name }}"
-    - "start container_{{ frontend_name }}"
+    - "restart {{ service_name }}"
 
-- name: "generate {{ pod_name }} service files"
-  containers.podman.podman_generate_systemd:
-    name: "{{ pod_name }}"
-    use_names: true
-    separator: "_"
-    dest: "{{ ansible_env.HOME }}/.config/systemd/user"
-  changed_when: false
 

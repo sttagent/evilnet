@@ -1,0 +1,11 @@
+[Unit]
+Description={{ service_name }} service
+
+[Kube]
+Yaml={{ config_dir }}/{{ service_name }}.kube.yml
+
+[Service]
+TimeoutSartSec=900
+
+[Iinstall]
+WantedBy=default.target
