@@ -1,3 +1,4 @@
+# vim: filetype=yaml.ansible
 ---
 - name: "create {{ service_name }} restic backup envronment file"
   template:
@@ -5,12 +6,12 @@
     dest: "{{ ansible_env.HOME }}/{{ restic_backup_config_dir }}/restic_backup.env"
     mode: '600'
 
-- name: "create {{ service_name }} backup service"
+- name: Create backup service {{ service_name }}"
   vars:
     restic_backup_cont_name: "{{ service_name }}_backup"
     conflicts: "{{ service_name }}.service"
     tag: "{{ service_name }}"
-  template:
+  ansible.bluiltin.template:
     src: restic_backup.service.j2
     dest: "{{systemd_unit_dir }}/{{ service_name }}_{{ restic_service_name }}.service"
     mode: '644'

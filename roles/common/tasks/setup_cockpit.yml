@@ -1,3 +1,4 @@
+# vim: filetype=yaml.ansible
 ---
 - name: close cockpit port in public zone
   become: true

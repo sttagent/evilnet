@@ -1,24 +1,26 @@
+# vim: filetype=yaml.ansible
 ---
-- name: check if "{{ item }} exists"
-  file:
+- name: Check if directories exists"
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
-    recurse: yes
+    recurse: true
   with_items:
     - "{{ quadlet_dir }}"
     - "{{ config_dir }}"
     - "{{ data_dir }}"
 
-- name: create "{{ service_name }} kube file"
-  template:
+- name: Create kube file "{{ service_name }}"
+  ansible.builtin.template:
     src: evilgrocy.kube.yml.j2
     dest: "{{ config_dir }}/{{ service_name }}.kube.yml"
+    mode: '644'
 
-- name: create "{{ service_name }} kube file"
-  template:
+- name: Create kube file "{{ service_name }}"
+  ansible.builtin.template:
     src: evilgrocy.kube.j2
     dest: "{{ quadlet_dir }}/{{ service_name }}.kube"
+    mode: '644'
+
   notify:
     - "restart {{ service_name }}"
-
-

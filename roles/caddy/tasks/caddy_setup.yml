@@ -1,16 +1,18 @@
+# vim: filetype=yaml.ansible
 ---
-- name: ensure that systemd container dir exists
-  file:
+- name: Ensure that systemd container dir exists
+  ansible.builtin.file:
     path: "{{ ansible_env.HOME }}/.config/containers/systemd"
     state: directory
-    recurse: yes
+    recurse: true
 
-- name: create "{{ service }} systemd quadlet file"
+- name: Create systemd quadlet file "{{ service }}"
   vars:
     config: "{{ ansible_env.HOME }}/{{ config_dir }}"
     data: "{{ ansible_env.HOME }}/{{ data_dir }}"
   template:
     src: evilcaddy.container.j2
     dest: "{{ ansible_env.HOME }}/.config/containers/systemd/{{ service_name }}.container"
+    mode: '644'
   notify:
     - "restart {{ service_name }}"
