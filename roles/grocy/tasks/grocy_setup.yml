@@ -10,17 +10,18 @@
     - "{{ config_dir }}"
     - "{{ data_dir }}"
 
-- name: Create kube file "{{ service_name }}"
+- name: Create kube yaml file "{{ service_name }}"
   ansible.builtin.template:
     src: evilgrocy.kube.yml.j2
     dest: "{{ config_dir }}/{{ service_name }}.kube.yml"
     mode: '644'
+  notify:
+    - "Restart {{ service_name }}"
 
 - name: Create kube file "{{ service_name }}"
   ansible.builtin.template:
     src: evilgrocy.kube.j2
     dest: "{{ quadlet_dir }}/{{ service_name }}.kube"
     mode: '644'
-
   notify:
-    - "restart {{ service_name }}"
+    - "Restart {{ service_name }}"

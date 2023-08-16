@@ -1,18 +1,8 @@
 # vim: filetype=yaml.ansible
 ---
-- name: "restart {{ pod_name }} timer"
-  systemd:
-    scope: user
-    name: "{{ pod_name }}_{{ restic_service_name }}.timer"
-    state: restarted
-    enabled: true
-    daemon_reload: true
-
-- name: "restart {{ service_name }}"
-  systemd:
+- name: "Restart {{ service_name }}"
+  ansible.builtin.systemd:
     scope: user
     name: "{{ service_name }}"
     state: restarted
-    enabled: yes
-    daemon_reload: yes
-
+    daemon_reload: true
