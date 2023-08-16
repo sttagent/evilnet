@@ -1,8 +1,8 @@
 # vim: filetype=yaml.ansible
 ---
-- name: install common packages
+- name: Install common packages
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name:
       - tmux
       - toolbox

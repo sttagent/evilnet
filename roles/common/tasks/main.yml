@@ -1,6 +1,7 @@
 # vim: filetype=yaml.ansible
 ---
-- include_tasks:
+- name: Include os update tasks
+  ansible.builtin.include_tasks:
     file: update_system.yml
     apply:
       tags:
@@ -8,7 +9,8 @@
   tags:
     - update_system
 
-- include_tasks:
+- name: Include ssh access tasks
+  ansible.builtin.include_tasks:
     file: setup_ssh_access.yml
     apply:
       tags:
@@ -16,7 +18,8 @@
   tags:
     - setup_ssh_access
 
-- include_tasks:
+- name: Include tailscale setup tasks
+  ansible.builtin.include_tasks:
     file: setup_tailscale.yml
     apply:
       tags:
@@ -24,7 +27,8 @@
   tags:
     - setup_tailscale
 
-- include_tasks:
+- name: Include cockpit setup tasks
+  ansible.builtin.include_tasks:
     file: setup_cockpit.yml
     apply:
       tags:
@@ -32,7 +36,8 @@
   tags:
     - setup_cockpit
 
-- include_tasks:
+- name: Include package related tasks
+  ansible.builtin.include_tasks:
     file: setup_common_packages.yml
     apply:
       tags:

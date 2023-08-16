@@ -1,4 +1,4 @@
-# vim: filetype=yaml.ansible
+#i vim: filetype=yaml.ansible
 ---
 - name: "Restart {{ service_name }}"
   ansible.builtin.systemd:

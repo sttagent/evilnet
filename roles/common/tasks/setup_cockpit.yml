@@ -1,17 +1,17 @@
 # vim: filetype=yaml.ansible
 ---
-- name: close cockpit port in public zone
+- name: Close cockpit port in public zone
   become: true
-  firewalld:
+  ansible.posix.firewalld:
     zone: public
     service: cockpit
     state: disabled
     permanent: true
     immediate: true
 
-- name: enable cockpit service socket
+- name: Enable cockpit service socket
   become: true
-  systemd:
+  ansible.builtin.systemd:
     name: cockpit.socket
     enabled: true
     state: started

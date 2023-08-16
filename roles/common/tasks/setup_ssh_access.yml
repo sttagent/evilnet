@@ -1,16 +1,16 @@
 # vim: filetype=yaml.ansible
 ---
-- name: upload ssh keys
-  authorized_key:
+- name: Upload ssh keys
+  ansible.posix.authorized_key:
     user: "{{ main_user }}"
     state: present
     key: "{{ item }}"
   with_items:
     - "{{ evilroots_ssh_key }}"
 
-- name: config sshd_config
+- name: Config sshd_config
   become: true
-  copy:
+  ansible.builtin.copy:
     content: |
       PermitRootLogin no
       PasswordAuthentication no
