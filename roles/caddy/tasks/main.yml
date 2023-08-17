@@ -5,7 +5,7 @@
     apply:
       become: true
       tags:
-        - cadd_firewall
+        - caddy_firewall
   tags:
     - caddy_firewall
 
