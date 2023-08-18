@@ -10,7 +10,7 @@
   vars:
     config: "{{ ansible_env.HOME }}/{{ config_dir }}"
     data: "{{ ansible_env.HOME }}/{{ data_dir }}"
-  template:
+  ansible.builtin.template:
     src: evilcaddy.container.j2
     dest: "{{ ansible_env.HOME }}/.config/containers/systemd/{{ service_name }}.container"
     mode: '644'
