@@ -1,7 +1,7 @@
 # vim: filetype=yaml.ansible
 ---
-- name: "create {{ service_name }} restic backup envronment file"
-  template:
+- name: "Create  restic backup envronment file {{ service_name }}"
+  ansible.builtin.template:
     src: restic_backup.env.j2
     dest: "{{ ansible_env.HOME }}/{{ restic_backup_config_dir }}/restic_backup.env"
     mode: '600'
@@ -11,18 +11,17 @@
     restic_backup_cont_name: "{{ service_name }}_backup"
     conflicts: "{{ service_name }}.service"
     tag: "{{ service_name }}"
-  ansible.bluiltin.template:
+  ansible.builtin.template:
     src: restic_backup.service.j2
-    dest: "{{systemd_unit_dir }}/{{ service_name }}_{{ restic_service_name }}.service"
+    dest: "{{ systemd_unit_dir }}/{{ service_name }}_{{ restic_service_name }}.service"
     mode: '644'
   notify:
     - "restart {{ service_name }} timer"
 
-- name: "create {{ service_name }} restic backup timer"
-  template:
+- name: "Create restic backup timer {{ service_name }}"
+  ansible.builtin.template:
     src: restic_backup.timer.j2
     dest: "{{ systemd_unit_dir }}/{{ service_name }}_{{ restic_service_name }}.timer"
     mode: '600'
   notify:
     - "restart {{ service_name }} timer"
-

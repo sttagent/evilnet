@@ -1,7 +1,7 @@
 # vim: filetype=yaml.ansible
 ---
 - include_tasks:
-    file: grocy_setup.yml
+    file: grocy_setup..ansible.yml
     apply:
       become_user: "{{ user }}"
       tags:
@@ -10,7 +10,7 @@
     - grocy_service
 
 - include_tasks:
-    file: grocy_backup_setup.yml
+    file: grocy_backup_setup.ansible.yml
     apply:
       become_user: "{{ user }}"
       tags:
