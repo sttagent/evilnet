@@ -3,4 +3,4 @@
 evilwoods:
   hosts:
     evilserver:
-      ansible_host: evilwoods.net
+      ansible_host: evilserver.king-hammerhead.ts.net
