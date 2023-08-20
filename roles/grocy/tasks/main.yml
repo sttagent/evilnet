@@ -2,7 +2,7 @@
 ---
 - name: Include grocy setup tasks
   ansible.builtin.include_tasks:
-    file: grocy_setup..ansible.yml
+    file: grocy_setup.ansible.yml
     apply:
       become_user: "{{ user }}"
       tags:

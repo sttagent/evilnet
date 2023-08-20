@@ -7,9 +7,16 @@ systemd_unit_dir: "{{ ansible_env.HOME }}/.config/systemd/user"
 service_name: evilgrocy
 host_port: 8081
 pod_port: 8080
-config_dir: "{{ ansible_env.HOME }}/{{ volume_directory }}/grocy/config"
-data_dir: "{{ ansible_env.HOME }}/{{ volume_directory }}/grocy/data"
+container_port: 80
+config_dir: "{{ volume_directory }}/grocy/config"
+data_dir: "{{ volume_directory }}/grocy/data"
 folder_to_backup: grocy
+
+# linuxserver.io image
+image: "docker.io/linuxserver/grocy"
+image_tag: "4.0.2"
+
+# official docker images
 backend_name: "{{ service_name }}_backend"
 backup_tag: "{{ service_name }}"
 backend_image: "docker.io/grocy/backend"
