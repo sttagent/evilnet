@@ -1,0 +1,20 @@
+[Unit]
+Description=Evilwoods {{ service_name }} sevice
+
+[Container]
+Image={{ image }}
+PublishPort={{ host_port }}:{{ container_port }}
+Environment=PUID=82
+Environment=PGID=82
+Environment=TZ=Europe/Stockholm
+Environment=GROCY_MODE=poduction
+Environment=GROCY_CULTURE=sv_SE
+Environment=GROCY_CURRENCY=SEK
+Volume={{ data }}:/config:Z
+Label=io.containers.autoupdate=registry
+
+[Service]
+TimeoutSartSec=900
+
+[Install]
+WantedBy=default.target
