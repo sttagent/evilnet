@@ -1,3 +1,10 @@
+# code: language=ansible
 # vim: filetype=yaml.ansible
 ---
-- import_playbook: evilserver.ansible.yml
+- name: Import ssh access setup paybook
+  ansible.builtin.import_playbook:
+    file: setup_ssh_access.yml
+
+- name: Import main paybook
+  ansbile.builtin.import_playbook:
+    file: evilserver.ansible.yml
