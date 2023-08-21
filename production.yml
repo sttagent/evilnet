@@ -1,0 +1,6 @@
+# vim: filetype=yaml.ansible
+---
+evilwoods:
+  hosts:
+    evilserver:
+      ansible_host: evilserver.king-hammerhead.ts.net
