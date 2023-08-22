@@ -1,8 +1,9 @@
 # code: language=ansible
 # vim: filetype=yaml.ansible
 ---
-- include_tasks:
-    file: caddy_firewall_setup.ansible.yml
+- name: Include caddy firewall setup tasks
+  ansible.builtin.include_tasks:
+    file: caddy_firewall_setup.yml
     apply:
       become: true
       tags:
@@ -10,8 +11,9 @@
   tags:
     - caddy_firewall
 
-- include_tasks:
-    file: caddy_setup.ansible.yml
+- name: Include caddy setup tasks
+  ansible.builtin.include_tasks:
+    file: caddy_setup.yml
     apply:
       become_user: "{{ user }}"
       tags:
