@@ -1,3 +1,4 @@
+# code: language=ansible
 ---
 # main user information
 main_user: aitvaras

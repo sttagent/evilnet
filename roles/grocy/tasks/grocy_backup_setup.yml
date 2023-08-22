@@ -1,3 +1,4 @@
+# code: language=ansible
  # vim: filetype=yaml.ansible
 ---
 - name: "Create  restic backup envronment file {{ service_name }}"

@@ -1,3 +1,4 @@
+# code: language=ansible
 # vim: filetype=yaml.ansible
 ---
 - name: Ensure that systemd container dir exists
