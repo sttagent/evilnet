@@ -7,4 +7,5 @@
     name: '*'
     state: latest
     update_cache: true
+    update_only: true
   notify: reboot host
