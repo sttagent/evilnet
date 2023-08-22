@@ -1,4 +1,4 @@
 # code: language=ansible
 # vim: filetype=yaml.ansible
 ---
-syncthing_image:  docker.io/syncthing/syncthing:latest
+syncthing_image: docker.io/syncthing/syncthing:latest

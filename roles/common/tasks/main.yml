@@ -3,7 +3,7 @@
 ---
 - name: Include os update tasks
   ansible.builtin.include_tasks:
-    file: update_system.ansible.yml
+    file: update_system..yml
     apply:
       tags:
         - update_system
@@ -12,7 +12,7 @@
 
 - name: Include ssh access tasks
   ansible.builtin.include_tasks:
-    file: setup_ssh_access.ansible.yml
+    file: setup_ssh_access..yml
     apply:
       tags:
         - setup_ssh_access
@@ -21,7 +21,7 @@
 
 - name: Include tailscale setup tasks
   ansible.builtin.include_tasks:
-    file: setup_tailscale.ansible.yml
+    file: setup_tailscale..yml
     apply:
       tags:
         - setup_tailscale
@@ -30,7 +30,7 @@
 
 - name: Include cockpit setup tasks
   ansible.builtin.include_tasks:
-    file: setup_cockpit.ansible.yml
+    file: setup_cockpit..yml
     apply:
       tags:
         - setup_cockpit
@@ -39,7 +39,7 @@
 
 - name: Include package related tasks
   ansible.builtin.include_tasks:
-    file: setup_common_packages.ansible.yml
+    file: setup_common_packages..yml
     apply:
       tags:
         - setup_common_packages

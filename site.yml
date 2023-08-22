@@ -7,4 +7,4 @@
 
 - name: Import main paybook
   ansbile.builtin.import_playbook:
-    file: evilserver.ansible.yml
+    file: evilserver..yml

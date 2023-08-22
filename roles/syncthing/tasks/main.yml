@@ -4,7 +4,7 @@
 - name: Syncthing
   tags: syncthing-setup
   block:
-    - name: create syncthing container
+    - name: Create syncthing container
       become: false
       containers.podman.podman_container:
         name: evilsync
@@ -23,29 +23,29 @@
         label:
           io.containers.autoupdate: registry
         generate_systemd:
-          names: yes
-          new: yes
+          names: true
+          new: true
           path: "/home/{{ main_user }}/.config/systemd/user/"
 
-    - name: enable generated evilsync service
+    - name: Enable generated evilsync service
       become: false
-      systemd: 
+      ansible.builtin.systemd:
         name: container-evilsync
         scope: user
-        enabled: yes
+        enabled: true
         state: started
-        daemon_reload: yes
-    
-    - name: open syncthing port
-      firewalld:
+        daemon_reload: true
+
+    - name: Open syncthing port
+      ansible.posix.firewalld:
         zone: "{{ tailscale_zone }}"
         service: syncthing
         state: enabled
-        permanent: yes
+        permanent: true
 
-    - name: open syncthing-gui port
-      firewalld:
+    - name: Open syncthing-gui port
+      ansible.posix.firewalld:
         zone: "{{ tailscale_zone }}"
         service: syncthing-gui
         state: enabled
-        permanent: yes
+        permanent: true
