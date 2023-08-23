@@ -2,6 +2,7 @@
 ---
 # main user information
 main_user: aitvaras
+ansible_become_password: "{{ main_user_password }}"
 
 # keys to add to authorized keys
 evilroots_ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHxJkDUczhrYoWjMypH9h1sDuTtovmnqAGODqhYT4wT9 aitvaras@evilroots"
