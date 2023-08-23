@@ -1,11 +1,18 @@
 # code: language=ansible
 # vim: filetype=yaml.ansible
 ---
-- name: Update all packages
-  become: true
-  ansible.builtin.dnf:
-    name: '*'
-    state: latest
-    update_cache: true
-    update_only: true
-  notify: reboot host
+- name: Update and reboot The OS
+  hosts: evilwoods
+  remote_user: "{{ main_user }}"
+  tasks:
+    - name: Update all packages
+      become: true
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+        update_cache: true
+        update_only: true
+
+    - name: Reboot the OS
+      become: true
+      ansible.builtin.reboot:
