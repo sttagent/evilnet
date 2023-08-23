@@ -1,4 +1,8 @@
-vault_pass_file := "~/.config/evilwoods/evilwoods_vault_pass"
+vault_pass_file := "~/.config/evilwoods/evilserver_vault_pass"
+
+play inventory playbook:
+    @ansible-playbook -i {{ inventory }}.yml --vault-password-file {{ vault_pass_file }} {{ playbook }}.yml 
+
 play-staging *TAGS:
     @ansible-playbook -i staging.yml --vault-password-file {{ vault_pass_file }} site.yml {{ TAGS }}
 
