@@ -4,9 +4,6 @@
 - name: Setup evilserver as evilwoods homeserver
   hosts: evilwoods
   remote_user: "{{ main_user }}"
-  vars:
-    ansible_become_password: "{{ main_user_password }}"
-    ansible_ssh_password: "{{ main_user_password }}"
 
   roles:
     - common
