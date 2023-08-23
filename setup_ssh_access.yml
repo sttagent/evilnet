@@ -5,6 +5,11 @@
   hosts: evilwoods
   remote_user: "{{ main_user  }}"
   tasks:
+    - name: Set hostname
+      become: true
+      ansible.builtin.hostname:
+        name: "{{  inventory_hostname }}"
+
     - name: Upload ssh keys
       ansible.posix.authorized_key:
         user: "{{ main_user }}"
@@ -23,4 +28,3 @@
         owner: root
         group: root
         mode: '0600'
-      notify: restart sshd
