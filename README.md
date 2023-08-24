@@ -5,3 +5,4 @@ Fedora packages:
 - ansible-collection-containers-podman
 - ansible-collection-ansible-posix
 - ansible-collection-ansible-netcommon
+- ansible-community-collection-general
