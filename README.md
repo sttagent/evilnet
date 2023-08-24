@@ -1,4 +1,4 @@
-### Dependecies
+### Dependencies
 Fedora packages:
 - sshpass
 - python3-netaddr
