@@ -29,7 +29,7 @@
         content: |
           PermitRootLogin no
           PasswordAuthentication no
-        dest: /etc/ssh/sshd_config.d/99-evilserver.conf
+        dest: /etc/ssh/sshd_config.d/99-evilcloud.conf
         owner: root
         group: root
         mode: '0600'

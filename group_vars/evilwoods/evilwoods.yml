@@ -14,4 +14,4 @@ restic_service_name: backup
 restic_config_dir: "{{ volume_directory }}/{{ restic_service_name }}/config"
 restic_image: docker.io/restic/restic
 restic_image_tag: latest
-restic_repo_path: s3:s3.eu-central-003.backblazeb2.com/evilserver-data-backup
+restic_repo_path: s3:s3.eu-central-003.backblazeb2.com/evilcloud-data-backup

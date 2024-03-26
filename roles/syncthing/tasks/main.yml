@@ -9,7 +9,7 @@
       containers.podman.podman_container:
         name: evilsync
         image: "{{ syncthing_image }}"
-        hostname: evilserver
+        hostname: evilcloud
         env:
           PUID: 0
           PGID: 0
