@@ -1,33 +1,6 @@
 # code: language=ansible
 # vim: filetype=yaml.ansible
 ---
-- name: Include os update tasks
-  ansible.builtin.include_tasks:
-    file: update_system.yml
-    apply:
-      tags:
-        - update_system
-  tags:
-    - update_system
-
-- name: Include ssh access tasks
-  ansible.builtin.include_tasks:
-    file: setup_ssh_access.yml
-    apply:
-      tags:
-        - setup_ssh_access
-  tags:
-    - setup_ssh_access
-
-- name: Include tailscale setup tasks
-  ansible.builtin.include_tasks:
-    file: setup_tailscale.yml
-    apply:
-      tags:
-        - setup_tailscale
-  tags:
-    - setup_tailscale
-
 - name: Include cockpit setup tasks
   ansible.builtin.include_tasks:
     file: setup_cockpit.yml
