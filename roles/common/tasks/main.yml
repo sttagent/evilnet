@@ -7,8 +7,6 @@
     apply:
       tags:
         - setup_cockpit
-  tags:
-    - setup_cockpit
 
 - name: Include package related tasks
   ansible.builtin.include_tasks:
@@ -16,5 +14,3 @@
     apply:
       tags:
         - setup_common_packages
-  tags:
-    - setup_common_packages

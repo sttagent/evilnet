@@ -8,8 +8,6 @@
       become_user: "{{ user }}"
       tags:
         - grocy_service
-  tags:
-    - grocy_service
 
 - name: Include grocy backup setup tasks
   ansible.builtin.include_tasks:
@@ -18,5 +16,3 @@
       become_user: "{{ user }}"
       tags:
         - grocy_backup
-  tags:
-    - grocy_backup
