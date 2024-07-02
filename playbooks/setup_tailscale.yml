@@ -8,7 +8,7 @@
     - name: Add tailscale reposotory
       become: true
       ansible.builtin.get_url:
-        url: https://pkgs.tailscale.com/stable/rhel/9/tailscale.repo
+        url: https://pkgs.tailscale.com/stable/centos/9/tailscale.repo
         dest: /etc/yum.repos.d/tailscale.repo
         owner: root
         group: root
