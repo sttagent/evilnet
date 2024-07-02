@@ -2,5 +2,5 @@
 # vim: filetype=yaml.ansible
 ---
 # tailscale
-tailscale_domain_name: king-hammerhead.ts.net
+tailscale_domain_name: drake-uaru.ts.net
 tailscale_zone: trusted
