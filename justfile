@@ -1,5 +1,8 @@
 vault_pass_file := "~/.config/evilwoods/evilwoods_vault_pass"
 
+default:
+    @just --list
+
 play inventory playbook:
     @ansible-playbook -i {{ inventory }}.yml --vault-password-file {{ vault_pass_file }} {{ playbook }}.yml 
 
