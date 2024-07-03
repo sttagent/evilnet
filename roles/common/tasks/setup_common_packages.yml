@@ -7,4 +7,5 @@
     name:
       - tmux
       - fish
+      - podman
     state: present
