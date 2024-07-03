@@ -8,4 +8,5 @@
       - tmux
       - toolbox
       - fail2ban
+      - fish
     state: present
