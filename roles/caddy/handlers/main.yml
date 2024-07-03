@@ -2,7 +2,7 @@
 # vim: filetype=yaml.ansible
 ---
 - name: Restart "{{ service_name }}"
-  ansible.bluitin.systemd:
+  ansible.builtin.systemd:
     name: "{{ service_name }}"
     enabled: true
     state: restarted
