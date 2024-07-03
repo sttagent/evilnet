@@ -6,7 +6,5 @@
   ansible.builtin.dnf:
     name:
       - tmux
-      - toolbox
-      - fail2ban
       - fish
     state: present
