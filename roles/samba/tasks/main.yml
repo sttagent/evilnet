@@ -1,0 +1,76 @@
+---
+- name: Install samba packages
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - samba
+      - samba-client
+    state: present
+
+- name: Unsure samba config dir exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    recurse: true
+  with_items:
+    - "/etc/samba"
+
+- name: Create samba users
+  become: true
+  ansible.builtin.user:
+    name: "{{ item }}"
+    shell: /bin/nologin
+  with_items:
+    - ryne
+    - samba-guest
+
+- name: Ensure user share dirs exists
+  ansible.builtin.file:
+    path: "/home/{{ item }}/share"
+    state: directory
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: "0755"
+  with_items:
+    - aitvaras
+    - ryne
+    - samba-guest
+
+- name: Mount external hdd
+  become: true
+  ansible.posix.mount:
+    path: "/home/{{ item }}/share"
+    src: "{{ samba_device }}"
+    fstype: btrfs
+    opts: "compress=zstd,nofail,subvol=/shares/{{ item }}"
+    state: mounted
+  with_items:
+    - aitvaras
+    - ryne
+    - samba-guest
+
+- name: Save Samba config
+  become: true
+  ansible.builtin.template:
+    src: smb.conf.j2
+    dest: "/etc/samba/smb.conf"
+    mode: "644"
+  notify: Restart samba
+
+- name: Start samba service
+  become: true
+  ansible.builtin.systemd:
+    name: smb
+    state: started
+    enabled: true
+    daemon_reload: true
+
+- name: Open firewall fort for samba
+  become: true
+  ansible.posix.firewalld:
+    zone: FedoraServer
+    service: samba
+    state: enabled
+    permanent: true
+    immediate: true

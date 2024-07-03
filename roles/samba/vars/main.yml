@@ -1,0 +1,3 @@
+---
+samba_mount_path: "/srv/External-backup"
+samba_device: "/dev/disk/by-label/External-backup"
