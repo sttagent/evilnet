@@ -1,0 +1,67 @@
+# code: language=ansible
+# vim: filetype=yaml.ansible
+---
+- name: Setup ssh access
+  hosts: evilwoods
+  remote_user: "{{ main_user  }}"
+  tasks:
+    - name: Add tailscale reposotory
+      become: true
+      ansible.builtin.get_url:
+        url: https://pkgs.tailscale.com/stable/fedora/tailscale.repo
+        dest: /etc/yum.repos.d/tailscale.repo
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Install the tailscale daemon
+      become: true
+      ansible.builtin.dnf:
+        name: tailscale
+        state: present
+        update_cache: true
+
+    - name: Enable end start tailscale daemon
+      become: true
+      ansible.builtin.systemd:
+        name: tailscaled
+        state: started
+        enabled: true
+        daemon_reload: true
+
+    - name: Check the state of toilscale daemon
+      ignore_errors: true
+      no_log: true
+      ansible.builtin.command: tailscale status
+      changed_when: false
+      register: tailscale_status_commmand
+
+    - name: Login into tailscale service
+      become: true
+      when:
+        - tailscale_status_commmand.failed
+        - '"Logged out." in tailscale_status_commmand.stdout'
+      ansible.builtin.command: tailscale up --authkey "{{ tailscale_auth_key }}"
+      changed_when: false
+      register: tailscale_up_auth_cmd
+
+
+    - name: Does tailscale have an ip
+      ansible.builtin.command: tailscale ip -4
+      changed_when: false
+      register: tailscale_ip_4_cmd
+
+    - name: Check for tailscale ip address
+      ansible.builtin.assert:
+        that:
+          - tailscale_ip_4_cmd.stdout is ansible.utils.ip_address
+        msg: tailscale ip -4 did not return an ip address
+
+    - name: Assign tailscale interface to a zone
+      become: true
+      ansible.posix.firewalld:
+        zone: "{{ tailscale_zone }}"
+        interface: tailscale0
+        state: enabled
+        permanent: true
+        immediate: true
