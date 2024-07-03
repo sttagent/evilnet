@@ -31,10 +31,7 @@
     owner: "{{ item }}"
     group: "{{ item }}"
     mode: "0755"
-  loop:
-    - aitvaras
-    - ryne
-    - samba-guest
+  loop: "{{ samba_users }}"
 
 - name: Mount external hdd
   become: true
@@ -44,10 +41,7 @@
     fstype: btrfs
     opts: "compress=zstd,nofail,subvol=/shares/{{ item }}"
     state: mounted
-  loop:
-    - aitvaras
-    - ryne
-    - samba-guest
+  loop: "{{ samba_users }}"
 
 - name: Save Samba config
   become: true
