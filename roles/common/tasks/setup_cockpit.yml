@@ -6,7 +6,7 @@
   ansible.posix.firewalld:
     zone: public
     service: cockpit
-    state: disabled
+    state: enabled
     permanent: true
     immediate: true
 
