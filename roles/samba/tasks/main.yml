@@ -13,7 +13,7 @@
     path: "{{ item }}"
     state: directory
     recurse: true
-  with_items:
+  loop:
     - "/etc/samba"
 
 - name: Create samba users
@@ -21,9 +21,8 @@
   ansible.builtin.user:
     name: "{{ item }}"
     shell: /bin/nologin
-  with_items:
-    - ryne
-    - samba-guest
+  loop: "{{ samba_users }}"
+  when: item != main_user
 
 - name: Ensure user share dirs exists
   ansible.builtin.file:
@@ -32,7 +31,7 @@
     owner: "{{ item }}"
     group: "{{ item }}"
     mode: "0755"
-  with_items:
+  loop:
     - aitvaras
     - ryne
     - samba-guest
@@ -45,7 +44,7 @@
     fstype: btrfs
     opts: "compress=zstd,nofail,subvol=/shares/{{ item }}"
     state: mounted
-  with_items:
+  loop:
     - aitvaras
     - ryne
     - samba-guest
