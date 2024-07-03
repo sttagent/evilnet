@@ -6,9 +6,12 @@
   remote_user: "{{ main_user }}"
 
   roles:
-    - common
+    - role: common
+      tags: common_tasks
+    - role: samba
+      tags: samba
     - role: caddy
-      tags: caddy
+      tags: caddy_tasks
     - role: grocy
-      tags: grocy
+      tags: grocy_tasks
       # - syncthing
