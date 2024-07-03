@@ -1,0 +1,5 @@
+[Unit]
+Description= Nfty app volume
+
+[Volume]
+Label=app=ntfy

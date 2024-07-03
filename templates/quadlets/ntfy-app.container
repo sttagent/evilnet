@@ -1,0 +1,16 @@
+[Unit]
+Description=Ntfy app container
+
+[Container]
+Label=app=ntfy
+ContainerName=nfty-app
+Image=docker.io/binwiederhier/ntfy
+Environment=TZ=UTC+2
+Volume=ntfy-app.volume:/var/cache/ntfy
+Volume=/home/aitvaras/storage/containers/ntfy-app/config:/etc/ntfy:Z
+Exec=serve --cache-file /var/cache/ntfy/cache.db
+PublishPort=8080:80
+AutoUpdate=registry
+
+[Install]
+WantedBy=multi-user.target
