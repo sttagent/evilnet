@@ -1,3 +1,8 @@
 ---
 samba_mount_path: "/srv/External-backup"
 samba_device: "/dev/disk/by-label/External-backup"
+
+samba_users:
+  - aitvaras
+  - ryne
+  - samba-guest
