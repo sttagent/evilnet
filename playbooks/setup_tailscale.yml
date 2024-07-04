@@ -2,7 +2,7 @@
 # vim: filetype=yaml.ansible
 ---
 - name: Setup ssh access
-  hosts: evilwoods
+  hosts: evilcloud_lan
   remote_user: "{{ main_user  }}"
   tasks:
     - name: Add tailscale reposotory
