@@ -13,7 +13,7 @@
     - name: Set hostname
       become: true
       ansible.builtin.hostname:
-        name: "{{  inventory_hostname }}"
+        name: "{{  inventory_hostname.split('_').0 }}"
 
     - name: Upload ssh keys
       ansible.posix.authorized_key:
