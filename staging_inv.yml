@@ -1,7 +1,0 @@
-# code: language=ansible
-# vim: filetype=yaml.ansible
----
-evilwoods:
-  hosts:
-    evilcloud:
-      ansible_host: 192.168.1.101
