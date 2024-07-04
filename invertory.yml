@@ -1,0 +1,9 @@
+# code: language=ansible
+# vim: filetype=yaml.ansible
+---
+ungrouped:
+  hosts:
+    evilcloud_lan:
+      ansible_host: 192.168.1.101
+    evilcloud:
+      ansible_host: evilcloud.drake-uaru.ts.net
