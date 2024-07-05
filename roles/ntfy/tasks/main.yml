@@ -1,0 +1,16 @@
+---
+- name: "Ensure config path exists. Service: {{ ntfy_service_name }}"
+  ansible.builtin.file:
+    path: "{{ ntfy_service_config_path }}"
+    state: directory
+    owner: "{{ main_user }}"
+    mode: '0755'
+
+- name: "Upload quadlets files. Service: {{ ntfy_service_name }}"
+  ansible.builtin.template:
+    src: "quadlets/{{ item }}.j2"
+    dest: "{{ user_quadlet_path }}/{{ item }}"
+    owner: "{{ main_user }}"
+    mode: "0644"
+  loop: "{{ ntfy_service_quadlet_files }}"
+  notify: Restart ntfy

@@ -1,0 +1,6 @@
+---
+- name: Restart ntfy
+  ansible.builtin.systemd:
+    name: "{{ nfty_service_name }}"
+    state: restarted
+    daemon_reload: true

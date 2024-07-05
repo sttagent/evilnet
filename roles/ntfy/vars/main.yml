@@ -1,0 +1,6 @@
+---
+ntfy_service_name: ntfy-app
+ntfy_service_config_path: "/home/{{ main_user }}/storage/containers/{{ ntfy_service_name }}/config"
+ntfy_service_quadlet_files:
+  - ntfy-app.container
+  - ntfy-app.volume
