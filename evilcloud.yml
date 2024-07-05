@@ -12,6 +12,8 @@
       tags: evilcloud_role
     - role: samba
       tags: samba_role
+    - role: ntfy
+      tags: ntfy_role
     - role: caddy
       tags: caddy_role
     - role: grocy
