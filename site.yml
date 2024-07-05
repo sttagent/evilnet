@@ -4,11 +4,13 @@
 - name: Import ssh access setup paybook
   ansible.builtin.import_playbook:
     playbooks/setup_ssh_access.yml
+  tags: access_setup
 
 - name: Import tailscale setup paybook
   ansible.builtin.import_playbook:
     playbooks/setup_ssh_access.yml
+  tags: access_setup
 
 - name: Import main paybook
   ansible.builtin.import_playbook:
-     evilcloud.yml
+    evilcloud.yml
