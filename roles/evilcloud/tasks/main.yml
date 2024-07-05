@@ -1,0 +1,7 @@
+---
+- name: Mount Storage ssd
+  ansible.builtin.mount:
+    path: "/home/{{ main_user }}/storage"
+    src: "/dev/disk/by-id/ata-CT1000MX500SSD1_1950E22EEC2F-part1"
+    fstype: btrfs
+    opts: "defaults,compress=zstd,subvol=storage"
