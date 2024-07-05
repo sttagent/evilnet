@@ -7,11 +7,13 @@
 
   roles:
     - role: common
-      tags: common_tasks
+      tags: common_role
+    - role: evilcloud
+      tags: evilcloud_role
     - role: samba
-      tags: samba_tasks
+      tags: samba_role
     - role: caddy
-      tags: caddy_tasks
+      tags: caddy_role
     - role: grocy
-      tags: grocy_tasks
+      tags: grocy_role
       # - syncthing
