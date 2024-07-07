@@ -8,7 +8,7 @@
 
 - name: "Upload quadlets files. Service: {{ ntfy_service_name }}"
   ansible.builtin.template:
-    src: "quadlets/{{ item }}.j2"
+    src: "quadlets/{{ ntfy_service_name }}/{{ item }}.j2"
     dest: "{{ user_quadlet_path }}/{{ item }}"
     owner: "{{ main_user }}"
     mode: "0644"
