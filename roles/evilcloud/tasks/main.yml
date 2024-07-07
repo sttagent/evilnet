@@ -1,9 +1,35 @@
 ---
+- name: Mount user container storage subvol
+  become: true
+  ansible.posix.mount:
+    path: "/home/{{ main_user }}/.local/share/containers"
+    src: "{{ evilcloud_storage_partition }}"
+    fstype: "btrfs"
+    opts: "defaults,noatime,compress=zstd,subvol=container-storage/aitvaras"
+    state: mounted
+
+- name: Ensure that user owns the dir
+  become: true
+  ansible.builtin.file:
+    path: "/home/{{ main_user }}/.local/share/containers"
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    mode: "0700"
+
+- name: Mount system container storage subvol
+  become: true
+  ansible.posix.mount:
+    path: "/var/lib/containers"
+    src: "{{ evilcloud_storage_partition }}"
+    fstype: "btrfs"
+    opts: "defaults,noatime,compress=zstd,subvol=container-storage/root"
+    state: mounted
+
 - name: Mount Storage ssd
   become: true
   ansible.posix.mount:
     path: "/home/{{ main_user }}/storage"
-    src: "/dev/disk/by-id/ata-CT1000MX500SSD1_1950E22EEC2F-part1"
+    src: "{{ evilcloud_storage_partition }}"
     fstype: btrfs
     opts: "defaults,compress=zstd,subvol=storage"
     state: mounted
