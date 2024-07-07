@@ -6,10 +6,10 @@
   remote_user: "{{ main_user }}"
 
   roles:
-    - role: common
-      tags: common_role
     - role: evilcloud
       tags: evilcloud_role
+    - role: common
+      tags: common_role
     - role: samba
       tags: samba_role
     - role: ntfy
