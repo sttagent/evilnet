@@ -4,11 +4,6 @@
 - name: Setup ssh access
   hosts: evilcloud_lan
   remote_user: "{{ main_user  }}"
-  vars:
-    ansible_ssh_pass: "{{ main_user_password }}"
-    ansible_ssh_common_args: '-o StrictHostKeyChecking=no \
-                              -o PreferredAuthentications=password \
-                              -o PubkeyAuthentication=no'
   tasks:
     - name: Set hostname
       become: true
