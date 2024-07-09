@@ -4,7 +4,8 @@ default:
     @just --list
 
 check *TAGS:
-    @ansible-playbook -i inventory.yml --vault-password-file {{ vault_pass_file }} --tags "{{ TAGS }}" --skip-tags access_setup --check site.yml 
+    @ansible-playbook -i inventory.yml --vault-password-file {{ vault_pass_file }} --tags "{{ TAGS }}" --check site.yml 
+
 list-tagged-tasks *TAGS:
     @ansible-playbook -i inventory.yml --vault-password-file {{ vault_pass_file }} --list-tasks --tags "{{ TAGS }}" --check site.yml 
 
