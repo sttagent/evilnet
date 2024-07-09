@@ -2,17 +2,11 @@
 # vim: filetype=yaml.ansible
 ---
 - name: Include cockpit setup tasks
-  ansible.builtin.include_tasks:
+  ansible.builtin.import_tasks:
     file: setup_cockpit.yml
-    apply:
-      tags:
-        - setup_cockpit
-  tags: setup_cockpit
+  tags: setup_cockpit_tasks
 
 - name: Include package related tasks
-  ansible.builtin.include_tasks:
+  ansible.builtin.import_tasks:
     file: setup_common_packages.yml
-    apply:
-      tags:
-        - setup_common_packages
-  tags: setup_common_packages
+  tags: setup_common_packages_tasks
