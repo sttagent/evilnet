@@ -2,14 +2,14 @@
 # vim: filetype=yaml.ansible
 ---
 - name: Setup evilcloud as evilwoods homeserver
-  hosts: evilcloud
+  hosts: evilcloud_ts
   remote_user: "{{ main_user }}"
 
   roles:
-    - role: evilcloud
-      tags: evilcloud_role
     - role: common
       tags: common_role
+    - role: evilcloud
+      tags: evilcloud_role
     - role: samba
       tags: samba_role
     - role: ntfy
