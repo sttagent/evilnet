@@ -11,11 +11,8 @@ config_dir: "{{ volume_directory }}/caddy/config"
 data_dir: "{{ volume_directory }}/caddy/data"
 
 unit_file_name: "container_{{ service_name }}"
- 
 mage_tag: latest
 host_port: 8080
 host_tls_port: 8443
 container_port: 80
 container_tls_port: 443
-
-
