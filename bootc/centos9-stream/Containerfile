@@ -1,0 +1,4 @@
+FROM quay.io/centos-bootc/centos-bootc:stream9
+RUN dnf config-manager --add-repo https://pkgs.tailscale.com/stable/centos/9/tailscale.repo && \
+    dnf install -y tailscale && dnf clean all && \
+    systemctl enable tailscaled.service
