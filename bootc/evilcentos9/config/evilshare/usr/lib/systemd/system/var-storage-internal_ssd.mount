@@ -1,0 +1,10 @@
+[Unit]
+Description=Mount internal SSD storage
+
+[Mount]
+What=/dev/disk/by-uuid/228dbd2a-ff96-47b9-b7d9-af30c7ba4ffa
+Where=/var/storage/internal_ssd
+Type=xfs
+
+[Install]
+WantedBy=multi-user.target

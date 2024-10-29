@@ -1,0 +1,16 @@
+[connection]
+id=enp6s18
+type=ethernet
+interface-name=enp6s18
+autoconnect=true
+
+[ethernet]
+
+[ipv4]
+method=auto
+
+[ipv6]
+addr-gen-mode=default
+method=auto
+
+[proxy]

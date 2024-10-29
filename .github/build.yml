@@ -1,0 +1,33 @@
+---
+name: Build custom Centos 9 stream bootc image
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**/README.md"
+    schedule:
+      - cron: "0 0 * * *"
+    pull_request:
+      branches:
+        - main
+      paths-ignore:
+        - "**/README.md"
+
+env:
+  IMAGE_NAME: "evilcentos9-stream-bootc"
+  IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"
+
+jobs:
+  build_and_push:
+    name: Build and push Centos 9 stream bootc image
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4

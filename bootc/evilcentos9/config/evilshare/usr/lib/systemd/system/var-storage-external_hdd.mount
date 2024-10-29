@@ -1,0 +1,11 @@
+[Unit]
+Description=Mount external HDD storage
+
+[Mount]
+What=/dev/stratis/external_hdd_pool/external_hdd_fs
+Where=/var/storage/external_hdd
+Type=xfs
+Options=defaults,nofail
+
+[Install]
+WantedBy=multi-user.target
